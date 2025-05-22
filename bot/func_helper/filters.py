@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-from pyrogram.errors import BadRequest
+from pyrogram.errors import BadRequest, PeerIdInvalid
 from pyrogram.filters import create
 from bot import admins, owner, group, LOGGER
 from pyrogram.enums import ChatMemberStatus
@@ -49,18 +49,23 @@ async def user_in_group_filter(client, update):
     uid = uid.id
     for i in group:
         try:
-            u = await client.get_chat_member(chat_id=int(i), user_id=uid)
+            chat_id_to_check = int(i)
+            u = await client.get_chat_member(chat_id=chat_id_to_check, user_id=uid)
             if u.status in [ChatMemberStatus.ADMINISTRATOR, ChatMemberStatus.MEMBER, ChatMemberStatus.OWNER]:
                 return True
+        except PeerIdInvalid:
+            LOGGER.error(f"配置的群组ID {i} 无效。请检查配置。")
+            continue
+        except ValueError:
+            LOGGER.error(f"配置的群组ID {i} 格式不正确，无法转换为整数。请检查配置。")
+            continue
         except BadRequest as e:
             if e.ID == 'USER_NOT_PARTICIPANT':
-                return False
+                pass
             elif e.ID == 'CHAT_ADMIN_REQUIRED':
-                LOGGER.error(f"bot不能在 {i} 中工作，请检查bot是否在群组及其权限设置")
-                return False
+                LOGGER.error(f"Bot不能在 {i} 中工作，请检查bot是否在群组及其权限设置")
             else:
-                return False
-        else:
+                LOGGER.error(f"检查群组 {i} 成员时发生 BadRequest: {e}")
             continue
     return False
 
@@ -74,22 +79,27 @@ async def user_in_group_on_filter(filt, client, update):
     """
     uid = update.from_user or update.sender_chat
     uid = uid.id
-    if uid in group:
-        return True
     for i in group:
         try:
-            u = await client.get_chat_member(chat_id=int(i), user_id=uid)
+            chat_id_to_check = int(i)
+            u = await client.get_chat_member(chat_id=chat_id_to_check, user_id=uid)
             if u.status in [ChatMemberStatus.ADMINISTRATOR, ChatMemberStatus.MEMBER,
-                            ChatMemberStatus.OWNER]:  # 移除了 'ChatMemberStatus.RESTRICTED' 防止有人进群直接注册不验证
-                return True  # 因为被限制用户无法使用bot，所以需要检查权限。
+                            ChatMemberStatus.OWNER]:
+                return True
+        except PeerIdInvalid:
+            LOGGER.error(f"配置的群组ID {i} 无效。请检查配置 (on_filter)。")
+            continue
+        except ValueError:
+            LOGGER.error(f"配置的群组ID {i} 格式不正确，无法转换为整数。请检查配置 (on_filter)。")
+            continue
         except BadRequest as e:
             if e.ID == 'USER_NOT_PARTICIPANT':
-                return False
+                pass
             elif e.ID == 'CHAT_ADMIN_REQUIRED':
-                LOGGER.error(f"bot不能在 {i} 中工作，请检查bot是否在群组及其权限设置")
-                return False
+                LOGGER.error(f"Bot不能在 {i} 中工作，请检查bot是否在群组及其权限设置 (on_filter)")
             else:
-                return False
+                LOGGER.error(f"检查群组 {i} 成员时发生 BadRequest (on_filter): {e}")
+            continue
     return False
 
 
