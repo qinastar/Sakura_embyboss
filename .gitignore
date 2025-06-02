@@ -13,3 +13,7 @@ __pycache__
 log
 *.sql
 bot-env
+config.json
+dev.md
+docker-compose.yml
+docker-compose.yaml

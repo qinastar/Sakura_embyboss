@@ -291,7 +291,7 @@ async def convert_bgcc(_pic, bg_color):
 
 async def draw_cover_text(cover, first_name, money, members):
     draw = ImageDraw.Draw(cover)
-    draw.text((cover.width // 2, 550), f'{first_name}红包',
+    draw.text((cover.width // 2, 550), f'{first_name} 星语祝福',
               font=ImageFont.truetype(RanksDraw.bold_font, 50), anchor='mm', fill=(249, 219, 160))
     draw.text((cover.width // 2, cover.height - 100), f'{money} / {members}',
               font=ImageFont.truetype(RanksDraw.zimu_font, 60), anchor='mm', fill=(249, 219, 160))

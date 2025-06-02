@@ -45,10 +45,13 @@ async def is_client_blocked(client: str) -> bool:
 
     blocked_clients = await get_blocked_clients()
     client_lower = client.lower()
+    # 新增日志，输出当前拦截规则和 client_lower
+    LOGGER.info(f"[ClientFilter] 待检测客户端: {client_lower}")
 
     for pattern in blocked_clients:
         try:
             if re.search(pattern.lower(), client_lower):
+                LOGGER.info(f"[ClientFilter] 匹配到规则: {pattern}")
                 return True
         except re.error as e:
             LOGGER.error(f"正则表达式错误: {pattern} - {str(e)}")
@@ -67,17 +70,18 @@ async def log_blocked_request(
 ):
     """记录被拦截的请求"""
     try:
-        action = "拦截可疑请求"
-        block_action = "封禁用户" if block_success else "不封禁用户"
+        action = "星灵拦截到可疑星际信号！"
+        block_action = "已触发星图封印" if block_success else "未触发星图封印"
         log_message = (
             f"🚫 {action}\n"
-            f"用户ID: {user_id or 'Unknown'}\n"
-            f"用户名称: {user_name or 'Unknown'}\n"
-            f"会话ID: {session_id or 'Unknown'}\n"
-            f"客户端: {client_name or 'Unknown'}\n"
-            f"TG ID: {tg_id or 'Unknown'}\n"
-            f"是否封禁用户: {block_action}\n"
-            f"时间: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
+            f"冒险者ID: {user_id or '未知'}\n"
+            f"冒险者昵称: {user_name or '未知'}\n"
+            f"星图会话ID: {session_id or '未知'}\n"
+            f"客户端标识: {client_name or '未知'}\n"
+            f"TG ID: {tg_id or '未知'}\n"
+            f"星尘封印状态: {block_action}\n"
+            f"星辰时刻: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n"
+            f"—— 星灵已为星域守护者记录此异动，守护星图安全！✨"
         )
 
         LOGGER.warning(log_message)
@@ -112,6 +116,10 @@ async def terminate_blocked_session(session_id: str, client_name: str) -> bool:
 async def handle_client_filter_webhook(request: Request):
     """处理Emby用户代理拦截webhook"""
     try:
+        # 读取原始请求体
+        raw_body = await request.body()
+        LOGGER.info(f"[ClientFilter] 原始请求体: {raw_body.decode('utf-8', errors='ignore')}")
+
         # 检查Content-Type
         content_type = request.headers.get("content-type", "").lower()
 
@@ -123,6 +131,9 @@ async def handle_client_filter_webhook(request: Request):
             form_data = await request.form()
             form = dict(form_data)
             webhook_data = json.loads(form["data"]) if "data" in form else None
+
+        # 新增日志，输出 webhook_data
+        LOGGER.info(f"[ClientFilter] webhook_data: {webhook_data}")
 
         if not webhook_data:
             return {"status": "error", "message": "No data received"}
@@ -152,6 +163,9 @@ async def handle_client_filter_webhook(request: Request):
         user_id = user_info.get("Id", "")
         session_id = session_info.get("Id", "")
         client_name = session_info.get("Client", "")
+
+        # 新增日志，输出 client_name
+        LOGGER.info(f"[ClientFilter] Session.Client: {client_name}")
 
         if not client_name:
             return {"status": "ignored", "message": "No Client info found"}

@@ -61,11 +61,12 @@ async def open_stats(_, call):
     if stat:
         _open.stat = False
         save_config()
-        await callAnswer(call, "🟢【自由注册】\n\n已结束", True)
+        await callAnswer(call, "🌌【星门广纳】\n\n传送通道已暂时关闭，星海静待下一次开启~", True)
         sur = all_user - tem
-        text = f'🫧 管理员 {call.from_user.first_name} 已关闭 **自由注册**\n\n' \
-               f'🎫 总注册限制 | {all_user}\n🎟️ 已注册人数 | {tem}\n' \
-               f'🎭 剩余可注册 | **{sur}**\n🤖 bot使用人数 | {tg}'
+        text = (f'🌌 星域守护者的宣告 📜\n\n'
+                f'一位神秘的星域守护者已将 **星门广纳** 调整为暂歇状态。\n\n'
+                f'🔭 星图契约上限：{all_user} 位冒险者\n✨ 已踏上星途：{tem} 位勇者\n'
+                f'🌠 尚余星位：**{sur}** 个\n🛰️ 与星灵同行的冒险者：{tg} 位')
         await asyncio.gather(sendPhoto(call, photo=bot_photo, caption=text, send=True),
                              editMessage(call, text, buttons=back_free_ikb))
         # await open_menu(_, call)
@@ -73,11 +74,12 @@ async def open_stats(_, call):
     elif not stat:
         _open.stat = True
         save_config()
-        await callAnswer(call, "🟡【自由注册】\n\n已开启", True)
+        await callAnswer(call, "🌟【星门广纳】\n\n传送通道已开启，宇宙期待新的冒险者！", True)
         sur = all_user - tem  # for i in group可以多个群组用，但是现在不做
-        text = f'🫧 管理员 {call.from_user.first_name} 已开启 **自由注册**\n\n' \
-               f'🎫 总注册限制 | {all_user}\n🎟️ 已注册人数 | {tem}\n' \
-               f'🎭 剩余可注册 | **{sur}**\n🤖 bot使用人数 | {tg}'
+        text = (f'🌟 星域守护者的宣告 📜\n\n'
+                f'一位神秘的星域守护者已启动 **星门广纳** 模式！\n\n'
+                f'🔭 星图契约上限：{all_user} 位冒险者\n✨ 已踏上星途：{tem} 位勇者\n'
+                f'🌠 尚余星位：**{sur}** 个\n🛰️ 与星灵同行的冒险者：{tg} 位')
         await asyncio.gather(sendPhoto(call, photo=bot_photo, caption=text, buttons=gog_rester_ikb(), send=True),
                              editMessage(call, text=text, buttons=back_free_ikb))
         # await open_menu(_, call)

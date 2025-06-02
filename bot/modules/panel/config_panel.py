@@ -391,11 +391,11 @@ async def set_fuxx_pitao(_, call):
 async def set_red_envelope_status(_, call):
     config.red_envelope.status = not config.red_envelope.status
     if config.red_envelope.status:
-        message = '👮🏻‍♂️ 您已开启 红包功能，现在用户可以发送红包了'
-        log_message = f"【admin】：管理员 {call.from_user.first_name} 已调整 红包功能 True"
+        message = '👮🏻‍♂️ 您已开启 星尘馈赠功能，现在用户可以发送星尘馈赠了'
+        log_message = f"【admin】：管理员 {call.from_user.first_name} 已调整 星尘馈赠功能 True"
     else:
-        message = '👮🏻‍♂️ 您已关闭 红包功能，现在用户不能发送红包了'
-        log_message = f"【admin】：管理员 {call.from_user.first_name} 已调整 红包功能 False"
+        message = '👮🏻‍♂️ 您已关闭 星尘馈赠功能，现在用户不能发送星尘馈赠了'
+        log_message = f"【admin】：管理员 {call.from_user.first_name} 已调整 星尘馈赠功能 False"
     await callAnswer(call, message, True)
     await config_p_re(_, call)
     save_config()
@@ -405,11 +405,11 @@ async def set_red_envelope_status(_, call):
 async def set_red_envelope_allow_private(_, call):
     config.red_envelope.allow_private = not config.red_envelope.allow_private
     if config.red_envelope.allow_private:
-        message = '👮🏻‍♂️ 您已开启 专属红包，现在用户可以发送专属红包了'
+        message = '👮🏻‍♂️ 您已开启 专属星尘馈赠，现在用户可以发送专属星尘馈赠了'
         log_message = f"【admin】：管理员 {call.from_user.first_name} 已调整 专属红包功能 True"
     else:
-        message = '👮🏻‍♂️ 您已关闭 专属红包，现在用户不能发送专属红包了'
-        log_message = f"【admin】：管理员 {call.from_user.first_name} 已调整 专属红包功能 False"
+        message = '👮🏻‍♂️ 您已关闭 专属星语传情，现在用户不能发送专属星语传情了'
+        log_message = f"【admin】：管理员 {call.from_user.first_name} 已调整 专属星语传情功能 False"
     await callAnswer(call, message, True)
     await config_p_re(_, call)
     save_config()

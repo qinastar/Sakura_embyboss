@@ -25,8 +25,7 @@ ENV TZ=Asia/Shanghai \
 RUN apk add --no-cache \
     mariadb-connector-c \
     tzdata \
-    mysql-client \
-    git && \
+    mysql-client && \
     ln -snf Asia/Shanghai /etc/localtime && echo Asia/Shanghai > /etc/timezone
 
 # 设置默认工作目录
@@ -36,9 +35,8 @@ WORKDIR ${WORKDIR}
 COPY --from=builder /usr/local/lib/python3.10/site-packages /usr/local/lib/python3.10/site-packages
 COPY --from=builder /usr/local/bin /usr/local/bin
 
-# 克隆项目代码
-RUN git clone https://github.com/berry8838/Sakura_embyboss . && \
-    rm -rf ./image
+# 复制项目代码
+COPY . ${WORKDIR}
 # 设置启动命令
 ENTRYPOINT [ "python3" ]
 CMD [ "main.py" ]

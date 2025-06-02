@@ -112,10 +112,10 @@ async def uun_info(_, msg, name = None):
         a = ''
 
     if e.name and schedall.low_activity and not schedall.check_ex:
-        ex = '__若21天无观看将封禁__'
+        ex = '__若星光连续21天未闪耀，星图契约将暂时沉睡__'
 
     elif e.name and not schedall.low_activity and not schedall.check_ex:
-        ex = ' __无需保号，放心食用__'
+        ex = ' __星图契约无需维持活跃度，请尽情探索吧__'
     else:
         ex = e.ex or '无账户信息'
     text += f"▎ 查询返回\n" \

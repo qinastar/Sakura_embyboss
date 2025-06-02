@@ -66,7 +66,7 @@ async def create_reds(
         [
             [
                 InlineKeyboardButton(
-                    text="👆🏻 好運連連", callback_data=f"red_envelope-{red_id}"
+                    text="✨ 捕获星辰 ✨", callback_data=f"red_envelope-{red_id}"
                 )
             ]
         ]
@@ -79,12 +79,12 @@ async def create_reds(
 async def send_red_envelope(_, msg):
     if not red_envelope.status:
         return await asyncio.gather(
-            msg.delete(), sendMessage(msg, "🚫 红包功能已关闭！")
+            msg.delete(), sendMessage(msg, "🚫 星尘馈赠功能暂未开启！")
         )
 
     if not red_envelope.allow_private and msg.reply_to_message:
         return await asyncio.gather(
-            msg.delete(), sendMessage(msg, "🚫 专属红包功能已关闭！")
+            msg.delete(), sendMessage(msg, "🚫 星语传情功能暂未开启！")
         )
 
     # 处理专享红包
@@ -101,7 +101,7 @@ async def send_red_envelope(_, msg):
                 msg.delete(),
                 sendMessage(
                     msg,
-                    "**🧧 专享红包：\n\n请回复某人 [数额][空格][个性化留言（可选）]**",
+                    "**✨ 星语传情：\n\n请回复某位星际旅者 [星尘数量][空格][神秘祝福语（可选）]**",
                     timer=60,
                 ),
             )
@@ -120,7 +120,7 @@ async def send_red_envelope(_, msg):
                     msg.delete(),
                     sendMessage(
                         msg,
-                        "**🧧 专享红包：\n\n请回复某人 [数额][空格][个性化留言（可选）]**",
+                        "**✨ 星语传情：\n\n请回复某位星际旅者 [星尘数量][空格][神秘祝福语（可选）]**",
                         timer=60,
                     ),
                 )
@@ -133,7 +133,7 @@ async def send_red_envelope(_, msg):
 
         # 创建并发送红包
         reply, _ = await asyncio.gather(
-            msg.reply("正在准备专享红包，稍等"), msg.delete()
+            msg.reply("正在编织星语祝福，请稍候片刻..."), msg.delete()
         )
 
         ikb = await create_reds(
@@ -153,9 +153,7 @@ async def send_red_envelope(_, msg):
         await asyncio.gather(
             sendPhoto(msg, photo=cover, buttons=ikb),
             reply.edit(
-                f"🔥 [{msg.reply_to_message.from_user.first_name}]"
-                f"(tg://user?id={msg.reply_to_message.from_user.id})\n"
-                f"您收到一个来自 [{first_name}](tg://user?id={msg.from_user.id}) 的专属红包"
+                f"✨ 一位神秘的星际旅者，向另一位幸运的旅者送出了一份星语祝福！"
             ),
         )
         return
@@ -169,8 +167,8 @@ async def send_red_envelope(_, msg):
             msg.delete(),
             sendMessage(
                 msg,
-                f"**🧧 发红包：\n\n/red [总{sakura_b}数] [份数] [mode]**\n\n"
-                f"[mode]留空为拼手气, 任意值为均分\n专享红包请回复 + {sakura_b}",
+                f"**✨ 星尘播撒：\n\n/red [总{sakura_b}数] [星尘份数] [模式]**\n\n"
+                f"[模式]留空为星运播撒 (拼手气), 任意值为星光均沾 (均分)\n星语传情请回复某位旅者 + {sakura_b}",
                 timer=60,
             ),
         )
@@ -182,7 +180,7 @@ async def send_red_envelope(_, msg):
 
     # 创建并发送红包
     flag = msg.command[3] if len(msg.command) > 3 else (1 if money == members else None)
-    reply, _ = await asyncio.gather(msg.reply("正在准备红包，稍等"), msg.delete())
+    reply, _ = await asyncio.gather(msg.reply("正在汇聚星尘之力，请稍候片刻..."), msg.delete())
 
     ikb = await create_reds(
         money=money,
@@ -205,22 +203,22 @@ async def grab_red_envelope(_, call):
         envelope = red_envelopes[red_id]
     except (IndexError, KeyError):
         return await callAnswer(
-            call, "/(ㄒoㄒ)/~~ \n\n来晚了，红包已经被抢光啦。", True
+            call, "🌌 星尘已被领取完毕，下次请早哦~", True
         )
 
     # 验证用户资格
     e = sql_get_emby(tg=call.from_user.id)
     if not e:
-        return await callAnswer(call, "你还未私聊bot! 数据库没有你.", True)
+        return await callAnswer(call, "冒险者，你似乎还未在星图上留下印记，请先与星灵沟通吧 (/start)。", True)
 
     # 检查是否已领取
     if call.from_user.id in envelope.receivers:
-        return await callAnswer(call, "ʕ•̫͡•ʔ 你已经领取过红包了。不许贪吃", True)
+        return await callAnswer(call, "✨ 每一份星尘都是独特的祝福，你已经收到过这份幸运啦~", True)
 
     # 检查红包是否已抢完
     if envelope.rest_members <= 0:
         return await callAnswer(
-            call, "/(ㄒoㄒ)/~~ \n\n来晚了，红包已经被抢光啦。", True
+            call, "🌌 星尘已被领取完毕，下次请早哦~", True
         )
 
     amount = 0
@@ -231,11 +229,11 @@ async def grab_red_envelope(_, call):
     # 处理专享红包
     elif envelope.type == "private":
         if call.from_user.id != envelope.target_user:
-            return await callAnswer(call, "ʕ•̫͡•ʔ 这是你的专属红包吗？", True)
+            return await callAnswer(call, "✨ 这份星语祝福似乎有特定的接收者哦~", True)
         amount = envelope.rest_money
         await callAnswer(
             call,
-            f"🧧恭喜，你领取到了\n{envelope.sender_name} の {amount}{sakura_b}\n\n{envelope.message}",
+            f"🎉 恭喜！你捕捉到了一份来自神秘旅者的星语祝福，获得了 {amount}{sakura_b} 星尘！\n\n神秘祝福：{envelope.message}",
             True,
         )
 
@@ -260,7 +258,7 @@ async def grab_red_envelope(_, call):
     envelope.rest_members -= 1
 
     await callAnswer(
-        call, f"🧧恭喜，你领取到了\n{envelope.sender_name} の {amount}{sakura_b}", True
+        call, f"🎉 恭喜！你捕获了 {amount}{sakura_b} 星尘！这份幸运来自一位神秘的星际旅者。", True
     )
 
     # 处理红包抢完后的展示
@@ -305,13 +303,21 @@ async def verify_red_envelope_sender(msg, money, is_private=False):
 
         if not all(conditions):
             error_msg = (
-                f"[{msg.from_user.first_name}](tg://user?id={msg.from_user.id}) "
-                f"违反规则，禁言一分钟。\nⅰ 所持有{sakura_b}不得小于5\nⅱ 发出{sakura_b}不得小于5"
+                f"一位神秘的冒险者似乎触动了星之规则，暂时无法播撒星尘。\n🌌 星尘播撒规则：\n"
+                f"ⅰ 持有的{sakura_b}星尘需大于等于5\nⅱ 播撒的{sakura_b}星尘需大于等于5"
             )
             if is_private:
-                error_msg += "\nⅲ 不许发自己"
+                error_msg += "\nⅲ 星语祝福不能送给自己哦~"
             else:
-                error_msg += "\nⅲ 未私聊过bot"
+                # For public red envelopes, the original code didn't have a specific 3rd rule here in the error message for this block
+                # It relied on earlier checks or the conditions list.
+                # The "未私聊过bot" was part of a generic message if `e` was None.
+                # Let's ensure the "未在星图留下印记" is covered if `e` is None.
+                if not e:
+                     error_msg += "\nⅲ 尚未在星图留下印记 (与星灵沟通 /start)"
+                elif not (money >= int(msg.command[2])): # Check for money < members for public
+                     error_msg += f"\nⅲ 播撒的{sakura_b}星尘数量不能少于份数哦~"
+
 
             await asyncio.gather(
                 msg.delete(),
@@ -332,7 +338,7 @@ async def verify_red_envelope_sender(msg, money, is_private=False):
         # 频道/群组发送
         first_name = msg.chat.title if msg.sender_chat.id == msg.chat.id else None
         if not first_name:
-            return False, None, "无法获取发送者名称"
+            return False, None, "无法识别星尘播撒者的身份信息。"
         return True, first_name, None
 
 
@@ -351,9 +357,10 @@ async def generate_final_message(envelope):
     if envelope.type == "private":
         receiver = envelope.receivers[envelope.target_user]
         return (
-            f"🧧 {sakura_b}红包\n\n**{envelope.message}\n\n"
-            f"🕶️{envelope.sender_name} **的专属红包已被 "
-            f"[{receiver['name']}](tg://user?id={envelope.target_user}) 领取"
+            f"✨ 星语传情揭晓 ✨\n\n"
+            f"神秘祝福：**{envelope.message}**\n\n"
+            f"一位神秘旅者的星语祝福，已被另一位幸运的旅者悄然接收。\n"
+            f"(获得了 {receiver['amount']} {sakura_b} 星尘)"
         )
 
     # 排序领取记录
@@ -362,15 +369,16 @@ async def generate_final_message(envelope):
     )
 
     text = (
-        f"🧧 {sakura_b}红包\n\n**{random.choice(Yulv.load_yulv().red_bag)}\n\n"
-        f"😎 {envelope.sender_name} **的红包已经被抢光啦~\n\n"
+        f"✨ 星尘播撒完毕 ✨\n\n"
+        f"**{random.choice(Yulv.load_yulv().red_bag)}**\n\n"
+        f"一位神秘旅者播撒的星尘已被探险家们瓜分完毕！\n\n"
     )
 
     for i, (user_id, details) in enumerate(sorted_receivers):
         if i == 0:
-            text += f"**🏆 手气最佳 [{details['name']}](tg://user?id={user_id}) **获得了 {details['amount']} {sakura_b}"
+            text += f"**🌟 星运之王：一位神秘的探险家** 捕获了 {details['amount']} {sakura_b}！"
         else:
-            text += f"\n**[{details['name']}](tg://user?id={user_id})** 获得了 {details['amount']} {sakura_b}"
+            text += f"\n✨ **一位幸运的探险家** 捕获了 {details['amount']} {sakura_b}。"
 
     return text
 
@@ -395,8 +403,7 @@ async def s_rank(_, msg):
                 ),
                 sendMessage(
                     msg,
-                    f"[{msg.from_user.first_name}]({msg.from_user.id}) "
-                    f"未私聊过bot或不足支付手续费5{sakura_b}，禁言一分钟。",
+                    f"一位冒险者似乎尚未与星灵沟通，或持有的{sakura_b}星尘不足以支付星图绘制费用(5{sakura_b})，暂时无法查看星云榜。",
                     timer=60,
                 ),
             )
@@ -406,7 +413,7 @@ async def s_rank(_, msg):
             sender = msg.from_user.id
     elif msg.sender_chat.id == msg.chat.id:
         sender = msg.chat.id
-    reply = await msg.reply(f"已扣除手续5{sakura_b}, 请稍等......加载中")
+    reply = await msg.reply(f"已消耗5{sakura_b}星尘作为星图绘制费用，正在为你展现星云榜...请稍候...")
     text, i = await users_iv_rank()
     t = "❌ 数据库操作失败" if not text else text[0]
     button = await users_iv_button(i, 1, sender or msg.chat.id)
@@ -415,7 +422,7 @@ async def s_rank(_, msg):
         sendPhoto(
             msg,
             photo=bot_photo,
-            caption=f"**▎🏆 {sakura_b}风云录**\n\n{t}",
+            caption=f"**🌌 {sakura_b}星云榜**\n\n{t}",
             buttons=button,
         ),
     )
@@ -449,9 +456,9 @@ async def users_iv_rank():
             e = 1 if d == 0 else d + 1
             text = ""
             for q in result:
-                name = str(members_dict.get(q.tg, q.tg))[:12]
+                name = "神秘冒险家" # Anonymized name
                 medal = m[e - 1] if e < 4 else m[3]
-                text += f"{medal}**第{cn2an.an2cn(e)}名** | [{name}](google.com?q={q.tg}) の **{q.iv} {sakura_b}**\n"
+                text += f"{medal}**星位第{cn2an.an2cn(e)}** | {name} 持有 **{q.iv} {sakura_b}**\n"
                 e += 1
             a.append(text)
             b += 1
@@ -467,11 +474,11 @@ async def users_iv_pikb(_, call):
     if call.from_user.id != tg:
         if not judge_admins(call.from_user.id):
             return await callAnswer(
-                call, "❌ 这不是你召唤出的榜单，请使用自己的 /srank", True
+                call, "✨ 这片星图似乎不属于你的召唤哦，请重新描绘自己的星云榜吧 (/srank)。", True
             )
 
-    await callAnswer(call, f"将为您翻到第 {j} 页")
+    await callAnswer(call, f"正在为你展现星云榜的第 {j} 片星域...")
     a, b = await users_iv_rank()
     button = await users_iv_button(b, j, tg)
     text = a[j - 1]
-    await editMessage(call, f"**▎🏆 {sakura_b}风云录**\n\n{text}", buttons=button)
+    await editMessage(call, f"**🌌 {sakura_b}星云榜**\n\n{text}", buttons=button)

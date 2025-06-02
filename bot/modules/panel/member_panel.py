@@ -29,8 +29,8 @@ from bot.sql_helper.sql_emby2 import sql_get_emby2, sql_delete_emby2
 # 创号函数
 async def create_user(_, call, us, stats):
     msg = await ask_return(call,
-                           text='🤖**注意：您已进入注册状态:\n\n• 请在2min内输入 `[用户名][空格][安全码]`\n• 举个例子🌰：`苏苏 1234`**\n\n• 用户名中不限制中/英文/emoji，🚫**特殊字符**'
-                                '\n• 安全码为敏感操作时附加验证，请填入最熟悉的数字4~6位；退出请点 /cancel', timer=120,
+                           text='🤖**注意：您已进入星图契约签订流程:\n\n• 请在2分钟内输入 `[星图昵称][空格][星尘秘钥]`\n• 举个例子🌰：`苏苏 1234`**\n\n• 星图昵称中不限制中/英文/emoji，🚫**特殊字符**'
+                                '\n• 星尘秘钥为敏感操作时附加验证，请填入最熟悉的数字4~6位；退出请点 /cancel', timer=120,
                            button=close_it_ikb)
     if not msg:
         return
@@ -44,14 +44,14 @@ async def create_user(_, call, us, stats):
         await msg.reply(f'⚠️ 输入格式错误\n\n`{msg.text}`\n **会话已结束！**')
     else:
         if _open.tem >= _open.all_user: return await msg.reply(
-            f'**🚫 很抱歉，注册总数({_open.tem})已达限制({_open.all_user})。**')
+            f'**🌌 很抱歉，星图绘制总数({_open.tem})已达上限({_open.all_user})。**')
         send = await msg.reply(
-            f'🆗 会话结束，收到设置\n\n用户名：**{emby_name}**  安全码：**{emby_pwd2}** \n\n__正在为您初始化账户，更新用户策略__......')
+            f'🆗 收到您的星语，星图昵称：**{emby_name}**  星尘秘钥：**{emby_pwd2}** \n\n__星灵正在为您初始化星图档案，更新星图策略__......')
         # emby api操作
         data = await emby.emby_create(emby_name, us)
         if not data:
             await editMessage(send,
-                              '**- ❎ 已有此账户名，请重新输入注册\n- ❎ 或检查有无特殊字符\n- ❎ 或emby服务器连接不通，会话已结束！**',
+                              '**- ❎ 已有此星图昵称，请重新输入\n- ❎ 或检查有无特殊字符\n- ❎ 或星图服务器连接不通，会话已结束！**',
                               re_create_ikb)
             LOGGER.error("【创建账户】：重复账户 or 未知错误！")
         else:
@@ -68,20 +68,20 @@ async def create_user(_, call, us, stats):
             if schedall.check_ex:
                 ex = ex.strftime("%Y-%m-%d %H:%M:%S")
             elif schedall.low_activity:
-                ex = '__若21天无观看将封禁__'
+                ex = '__若星光连续21天未闪耀，星图契约将暂时沉睡__'
             else:
-                ex = '__无需保号，放心食用__'
+                ex = '__星图契约无需维持活跃度，请尽情探索吧__'
             await editMessage(send,
-                              f'**▎创建用户成功🎉**\n\n'
-                              f'· 用户名称 | `{emby_name}`\n'
-                              f'· 用户密码 | `{pwd}`\n'
-                              f'· 安全密码 | `{emby_pwd2}`（仅发送一次）\n'
-                              f'· 到期时间 | `{ex}`\n'
-                              f'· 当前线路：\n'
+                              f'**▎星图契约签订成功🎉**\n\n'
+                              f'· 星图昵称 | `{emby_name}`\n'
+                              f'· 星图密码 | `{pwd}`\n'
+                              f'· 星尘秘钥 | `{emby_pwd2}`（仅此一次机会记录哦）\n'
+                              f'· 契约期限 | `{ex}`\n'
+                              f'· 当前星路：\n'
                               f'{emby_line}\n\n'
-                              f'**·【服务器】 - 查看线路和密码**')
-            LOGGER.info(f"【创建账户】[开注状态]：{call.from_user.id} - 建立了 {emby_name} ") if stats else LOGGER.info(
-                f"【创建账户】：{call.from_user.id} - 建立了 {emby_name} ")
+                              f'**·【星之服务器】 - 查看星路和密码**')
+            LOGGER.info(f"【星门开启-创建契约】：冒险者 {call.from_user.id} - 建立了星图档案 {emby_name} ") if stats else LOGGER.info(
+                f"【创建星图契约】：冒险者 {call.from_user.id} - 建立了星图档案 {emby_name} ")
             tem_adduser()
 
 
@@ -123,17 +123,17 @@ async def create(_, call):
         return await callAnswer(call, '⚠️ 数据库没有你，请重新 /start录入', True)
 
     if e.embyid:
-        await callAnswer(call, '💦 你已经有账户啦！请勿重复注册。', True)
+        await callAnswer(call, '💦 您已拥有星图契约啦！请勿重复签订。', True)
     elif not _open.stat and int(e.us) <= 0:
-        await callAnswer(call, f'🤖 自助注册已关闭，等待开启或使用注册码注册。', True)
+        await callAnswer(call, f'🌌 星门暂未对所有冒险者开放，请耐心等待或使用星符踏上星途。', True)
     elif not _open.stat and int(e.us) > 0:
-        send = await callAnswer(call, f'🪙 资质核验成功，请稍后。', True)
+        send = await callAnswer(call, f'✨ 星尘之力核验成功，星灵正在为您准备。', True)
         if send is False:
             return
         else:
             await create_user(_, call, us=e.us, stats=False)
     elif _open.stat:
-        send = await callAnswer(call, f"🪙 开放注册中，免除资质核验。", True)
+        send = await callAnswer(call, f"✨ 星门已为所有勇者敞开，无需星符即可踏上星途！", True)
         if send is False:
             return
         else:
@@ -151,57 +151,57 @@ async def change_tg(_, call):
         if status == 'nochangetg':
             return await asyncio.gather(
                 editMessage(call,
-                            f' ❎ 好的，[您](tg://user?id={call.from_user.id})已拒绝[{current_id}](tg://user?id={current_id})的换绑请求，原TG：`{replace_id}`。'),
-                bot.send_message(current_id, '❌ 您的换绑请求已被拒。请在群组中详细说明情况。'))
+                            f' ❎ 星域守护者 已拒绝一位星际旅者的星图契约迁跃请求 (涉及原星图坐标TG: {replace_id}，请求者TG ID: {current_id})。'),
+                bot.send_message(current_id, '❌ 抱歉，冒险者，您的星图契约迁跃请求未能通过星域守护者的审核。若有疑问，请在星域通讯频道说明情况。'))
 
         await editMessage(call,
-                          f' ✅ 好的，[您](tg://user?id={call.from_user.id})已通过[{current_id}](tg://user?id={current_id})的换绑请求，原TG：`{replace_id}`。')
+                          f' ✅ 星域守护者 已批准一位星际旅者的星图契约迁跃请求 (涉及原星图坐标TG: {replace_id}，请求者TG ID: {current_id})。')
         e = sql_get_emby(tg=replace_id)
-        if not e or not e.embyid: return await bot.send_message(current_id, '⁉️ 出错了，您所换绑账户已不存在。')
+        if not e or not e.embyid: return await bot.send_message(current_id, '⁉️ 出错了，您所请求迁跃的星图契约已不存在。')
         
         # 清空原账号信息但保留tg
         if sql_update_emby(Emby.tg == replace_id, embyid=None, name=None, pwd=None, pwd2=None, 
                           lv='d', cr=None, ex=None, us=0, iv=0, ch=None):
-            LOGGER.info(f'【TG改绑】清空原账户 id{e.tg} 成功')
+            LOGGER.info(f'【星图迁跃】清空原星图契约持有者 (TG ID: {e.tg}) 信息成功，Emby用户: {e.name}')
         else:
-            await bot.send_message(current_id, "🍰 **⭕#TG改绑 原账户清空错误，请联系闺蜜（管理）！**")
-            LOGGER.error(f"【TG改绑】清空原账户 id{e.tg} 失败, Emby:{e.name}未转移...")
+            await bot.send_message(current_id, "⚠️ **⭕#星图迁跃 原星图印记清除时出现波动，请联系星域守护者！**")
+            LOGGER.error(f"【星图迁跃】清空原星图契约持有者 (TG ID: {e.tg}) 信息失败, 星图档案 (Emby用户: {e.name}) 未能转移...")
             return
 
         # 将原账号的币值转移到新账号
         old_iv = e.iv
         if sql_update_emby(Emby.tg == current_id, embyid=e.embyid, name=e.name, pwd=e.pwd, pwd2=e.pwd2,
                            lv=e.lv, cr=e.cr, ex=e.ex, iv=old_iv):
-            text = f'⭕ 请接收您的信息！\n\n' \
-                   f'· 用户名称 | `{e.name}`\n' \
-                   f'· 用户密码 | `{e.pwd}`\n' \
-                   f'· 安全密码 | `{e.pwd2}`（仅发送一次）\n' \
-                   f'· 到期时间 | `{e.ex}`\n\n' \
-                   f'· 当前线路：\n{emby_line}\n\n' \
-                   f'**·在【服务器】按钮 - 查看线路和密码**'
+            text = f'🔮 您的星图契约已成功迁跃！\n\n' \
+                   f'· 星图昵称 | `{e.name}`\n' \
+                   f'· 星图密码 | `{e.pwd}`\n' \
+                   f'· 星尘秘钥 | `{e.pwd2}`（仅此一次机会记录哦）\n' \
+                   f'· 契约期限 | `{e.ex}`\n\n' \
+                   f'· 当前星路：\n{emby_line}\n\n' \
+                   f'**·在【星之服务器】按钮 - 查看星路和密码**'
             await bot.send_message(current_id, text)
             LOGGER.info(
-                f'【TG改绑】 emby账户 {e.name} 绑定至 {current_id}')
+                f'【星图迁跃】星图档案 (Emby用户: {e.name}) 已成功绑定至新的星图坐标 (TG ID: {current_id})，原TG ID: {replace_id}')
         else:
-            await bot.send_message(current_id, '🍰 **【TG改绑】数据库处理出错，请联系闺蜜（管理）！**')
-            LOGGER.error(f"【TG改绑】 emby账户{e.name} 绑定未知错误。")
+            await bot.send_message(current_id, '⚠️ **【星图迁跃】星图数据库处理出错，请联系星域守护者！**')
+            LOGGER.error(f"【星图迁跃】星图档案 (Emby用户: {e.name}) 绑定至新坐标 (TG ID: {current_id}) 时发生未知错误，原TG ID: {replace_id}。")
         return
     except (IndexError, ValueError):
         pass
     d = sql_get_emby(tg=call.from_user.id)
     if not d:
-        return await callAnswer(call, '⚠️ 数据库没有你，请重新 /start录入', True)
+        return await callAnswer(call, '⚠️ 星图数据库中没有您的记录，请重新通过 /start 与星灵建立连接', True)
     if d.embyid:
-        return await callAnswer(call, '⚖️ 您已经拥有账户，请不要钻空子', True)
+        return await callAnswer(call, '⚖️ 您已拥有星图契约，无需进行此操作', True)
 
-    await callAnswer(call, '⚖️ 更换绑定的TG')
+    await callAnswer(call, '⚖️ 进行星图契约迁跃')
     send = await editMessage(call,
-                             '🔰 **【更换绑定emby的tg】**\n'
+                             '🔰 **【星图契约迁跃至当前TG】**\n'
                              '须知：\n'
-                             '- **请确保您之前用其他tg账户注册过**\n'
-                             '- **请确保您注册的其他tg账户呈已注销状态**\n'
-                             '- **请确保输入正确的emby用户名，安全码/密码**\n\n'
-                             '您有120s回复 `[emby用户名] [安全码/密码]`\n例如 `苏苏 5210` ，若密码为空则填写"None"，退出点 /cancel')
+                             '- **请确保您之前已用其他TG账户签订过星图契约**\n'
+                             '- **请确保您原TG账户已注销或无法访问**\n'
+                             '- **请确保输入正确的Emby用户名及星尘秘钥/密码**\n\n'
+                             '您有120秒时间回复 `[Emby用户名] [星尘秘钥/密码]`\n例如 `苏苏 5210` ，若密码为空则填写"None"，退出请点 /cancel')
     if send is False:
         return
 
@@ -225,84 +225,80 @@ async def change_tg(_, call):
             # 在emby2中，验证安全码 或者密码
             e2 = sql_get_emby2(name=emby_name)
             if e2 is None:
-                return await editMessage(call, f'❓ 未查询到bot数据中名为 {emby_name} 的账户，请使用 **绑定TG** 功能。',
+                return await editMessage(call, f'❓ 未在星图中查询到名为 {emby_name} 的档案，请使用 **绑定星图至TG** 功能。',
                                          buttons=re_bindtg_ikb)
             if emby_pwd != e2.pwd2:
                 success, embyid = await emby.authority_account(call.from_user.id, emby_name, emby_pwd)
                 if not success:
                     return await editMessage(call,
-                                             f'💢 安全码or密码验证错误，请检查输入\n{emby_name} {emby_pwd} 是否正确。',
+                                             f'💢 星尘秘钥或密码验证失败，请检查输入\n{emby_name} {emby_pwd} 是否正确。',
                                              buttons=re_changetg_ikb)
                 sql_update_emby(Emby.tg == call.from_user.id, embyid=embyid, name=e2.name, pwd=emby_pwd,
                                 pwd2=e2.pwd2, lv=e2.lv, cr=e2.cr, ex=e2.ex)
                 sql_delete_emby2(embyid=e2.embyid)
-                text = f'⭕ 账户 {emby_name} 的密码验证成功！\n\n' \
-                       f'· 用户名称 | `{emby_name}`\n' \
-                       f'· 用户密码 | `{pwd[0]}`\n' \
-                       f'· 安全密码 | `{e2.pwd2}`（仅发送一次）\n' \
-                       f'· 到期时间 | `{e2.ex}`\n\n' \
-                       f'· 当前线路：\n{emby_line}\n\n' \
-                       f'**·在【服务器】按钮 - 查看线路和密码**'
+                text = f'🔮 星图档案 {emby_name} 的密码验证成功！\n\n' \
+                       f'· 星图昵称 | `{emby_name}`\n' \
+                       f'· 星图密码 | `{pwd[0]}`\n' \
+                       f'· 星尘秘钥 | `{e2.pwd2}`（仅此一次机会记录哦）\n' \
+                       f'· 契约期限 | `{e2.ex}`\n\n' \
+                       f'· 当前星路：\n{emby_line}\n\n' \
+                       f'**·在【星之服务器】按钮 - 查看星路和密码**'
                 await sendMessage(call,
-                                  f'⭕#TG改绑 原emby账户 #{emby_name}\n\n'
-                                  f'从emby2表绑定至 [{call.from_user.first_name}](tg://user?id={call.from_user.id}) - {call.from_user.id}',
+                                  f'🌌#星图迁跃请求\n一位身份未知的星际旅者，其原星图档案 (Emby用户: {emby_name}) 已从备用星图记录中迁跃至新的星图坐标。',
                                   send=True)
-                LOGGER.info(f'【TG改绑】 emby账户 {emby_name} 绑定至 {call.from_user.first_name}-{call.from_user.id}')
+                LOGGER.info(f'【星图迁跃】星图档案 (Emby用户: {emby_name}) 从备用星图绑定至 星际旅者 (新TG ID: {call.from_user.id})')
                 await editMessage(call, text)
 
             elif emby_pwd == e2.pwd2:
-                text = f'⭕ 账户 {emby_name} 的安全码验证成功！\n\n' \
-                       f'· 用户名称 | `{emby_name}`\n' \
-                       f'· 用户密码 | `{e2.pwd}`\n' \
-                       f'· 安全密码 | `{pwd[1]}`（仅发送一次）\n' \
-                       f'· 到期时间 | `{e2.ex}`\n\n' \
-                       f'· 当前线路：\n{emby_line}\n\n' \
-                       f'**·在【服务器】按钮 - 查看线路和密码**'
+                text = f'🔮 星图档案 {emby_name} 的星尘秘钥验证成功！\n\n' \
+                       f'· 星图昵称 | `{emby_name}`\n' \
+                       f'· 星图密码 | `{e2.pwd}`\n' \
+                       f'· 星尘秘钥 | `{pwd[1]}`（仅此一次机会记录哦）\n' \
+                       f'· 契约期限 | `{e2.ex}`\n\n' \
+                       f'· 当前星路：\n{emby_line}\n\n' \
+                       f'**·在【星之服务器】按钮 - 查看星路和密码**'
                 sql_update_emby(Emby.tg == call.from_user.id, embyid=e2.embyid, name=e2.name, pwd=e2.pwd,
                                 pwd2=emby_pwd, lv=e2.lv, cr=e2.cr, ex=e2.ex)
                 sql_delete_emby2(embyid=e2.embyid)
                 await sendMessage(call,
-                                  f'⭕#TG改绑 原emby账户 #{emby_name}\n\n'
-                                  f'从emby2表绑定至 [{call.from_user.first_name}](tg://user?id={call.from_user.id}) - {call.from_user.id}',
+                                  f'🌌#星图迁跃请求\n一位身份未知的星际旅者，其原星图档案 (Emby用户: {emby_name}) 已从备用星图记录中迁跃至新的星图坐标。',
                                   send=True)
-                LOGGER.info(f'【TG改绑】 emby账户 {emby_name} 绑定至 {call.from_user.first_name}-{call.from_user.id}')
+                LOGGER.info(f'【星图迁跃】星图档案 (Emby用户: {emby_name}) 从备用星图绑定至 星际旅者 (新TG ID: {call.from_user.id})')
                 await editMessage(call, text)
 
         else:
-            if call.from_user.id == e.tg: return await editMessage(call, '⚠️ 您已经拥有账户。')
+            if call.from_user.id == e.tg: return await editMessage(call, '⚠️ 您已拥有此星图契约。')
             if emby_pwd != e.pwd2:
                 success, embyid = await emby.authority_account(call.from_user.id, emby_name, emby_pwd)
                 if not success:
                     return await editMessage(call,
-                                             f'💢 安全码or密码验证错误，请检查输入\n{emby_name} {emby_pwd} 是否正确。',
+                                             f'💢 星尘秘钥或密码验证失败，请检查输入\n{emby_name} {emby_pwd} 是否正确。',
                                              buttons=re_changetg_ikb)
             await  asyncio.gather(editMessage(call,
-                                              f'✔️ 会话结束，验证成功\n\n'
-                                              f'🔰 用户名：**{emby_name}** 输入码：**{emby_pwd}**......\n\n'
-                                              f'🎯 已向授权群发送申请，请联系并等待管理员确认......'),
+                                              f'✔️ 星尘秘钥核验成功\n\n'
+                                              f'🔰 星图昵称：**{emby_name}** 输入秘钥：**{emby_pwd}**......\n\n'
+                                              f'🎯 已向星域议会发送迁跃申请，请联系星域守护者并等待确认......'),
                                   sendMessage(call,
-                                              f'⭕#TG改绑\n'
-                                              f'**用户 [{call.from_user.id}](tg://user?id={call.from_user.id}) 正在试图改绑Emby: [{e.name}](tg://user?id={e.tg})，原TG: `{e.tg}`，已通过安全/密码核验\n\n'
-                                              f'请管理员审核决定：**',
+                                              f'🌌#星图迁跃请求\n**一位星际旅者 正在请求将星图档案迁跃至新的星图坐标。该请求已通过星尘秘钥核验。\n关联Emby用户：{e.name}，原星图坐标 (TG ID): {e.tg}\n\n请星域守护者审核：**',
                                               buttons=send_changetg_ikb(call.from_user.id, e.tg),
                                               send=True))
             LOGGER.info(
-                f'【TG改绑】 {call.from_user.first_name}-{call.from_user.id} 通过验证账户，已递交对Emby: {emby_name}, Tg:{e.tg} 的换绑申请')
+                f'【星图迁跃】星际旅者 (新TG ID: {call.from_user.id}) 通过星尘秘钥核验，已递交对星图档案 (Emby用户: {emby_name}, 原TG ID: {e.tg}) 的迁跃申请')
 
 
 @bot.on_callback_query(filters.regex('bindtg') & user_in_group_on_filter)
 async def bind_tg(_, call):
     d = sql_get_emby(tg=call.from_user.id)
     if d.embyid is not None:
-        return await callAnswer(call, '⚖️ 您已经拥有账户，请不要钻空子', True)
-    await callAnswer(call, '⚖️ 将账户绑定TG')
+        return await callAnswer(call, '⚖️ 您已拥有星图契约，无需进行此操作', True)
+    await callAnswer(call, '⚖️ 绑定星图档案至当前TG')
     send = await editMessage(call,
-                             '🔰 **【已有emby绑定至tg】**\n'
+                             '🔰 **【已有Emby档案绑定至当前TG】**\n'
                              '须知：\n'
-                             '- **请确保您需绑定的账户不在bot中**\n'
-                             '- **请确保您不是恶意绑定他人的账户**\n'
-                             '- **请确保输入正确的emby用户名，密码**\n\n'
-                             '您有120s回复 `[emby用户名] [密码]`\n例如 `苏苏 5210` ，若密码为空则填写“None”，退出点 /cancel')
+                             '- **请确保您需绑定的Emby档案尚未被其他TG绑定**\n'
+                             '- **请勿恶意绑定他人档案**\n'
+                             '- **请确保输入正确的Emby用户名及密码**\n\n'
+                             '您有120秒时间回复 `[Emby用户名] [密码]`\n例如 `苏苏 5210` ，若密码为空则填写"None"，退出请点 /cancel')
     if send is False:
         return
 
@@ -334,25 +330,25 @@ async def bind_tg(_, call):
                     security_pwd = await pwd_create(4)
                     pwd = ['空（直接回车）', security_pwd] if emby_pwd == 'None' else [emby_pwd, emby_pwd]
                     ex = (datetime.now() + timedelta(days=30))
-                    text = f'✅ 账户 {emby_name} 成功绑定\n\n' \
-                           f'· 用户名称 | `{emby_name}`\n' \
-                           f'· 用户密码 | `{pwd[0]}`\n' \
-                           f'· 安全密码 | `{pwd[1]}`（仅发送一次）\n' \
-                           f'· 到期时间 | `{ex}`\n\n' \
-                           f'· 当前线路：\n{emby_line}\n\n' \
-                           f'· **在【服务器】按钮 - 查看线路和密码**'
+                    text = f'✅ 星图档案 {emby_name} 成功绑定！\n\n' \
+                           f'· 星图昵称 | `{emby_name}`\n' \
+                           f'· 星图密码 | `{pwd[0]}`\n' \
+                           f'· 星尘秘钥 | `{pwd[1]}`（仅此一次机会记录哦）\n' \
+                           f'· 契约期限 | `{ex}`\n\n' \
+                           f'· 当前星路：\n{emby_line}\n\n' \
+                           f'· **在【星之服务器】按钮 - 查看星路和密码**'
                     sql_update_emby(Emby.tg == call.from_user.id, embyid=embyid, name=emby_name, pwd=pwd[0],
                                     pwd2=pwd[1], lv='b', cr=datetime.now(), ex=ex)
                     await editMessage(call, text)
                     await sendMessage(call,
-                                      f'⭕#新TG绑定 原emby账户 #{emby_name} \n\n已绑定至 [{call.from_user.first_name}](tg://user?id={call.from_user.id}) - {call.from_user.id}',
+                                      f'✨#新星图契约绑定\n原星图档案 (Emby用户: {emby_name}) 已成功绑定至一位新的星际旅者。',
                                       send=True)
                     LOGGER.info(
-                        f'【新TG绑定】 emby账户 {emby_name} 绑定至 {call.from_user.first_name}-{call.from_user.id}')
+                        f'【新星图契约绑定】星图档案 (Emby用户: {emby_name}) 成功绑定至新的星际旅者 (TG ID: {call.from_user.id})')
             else:
-                await editMessage(call, '🔍 数据库已有此账户，不可绑定，请使用 **换绑TG**', buttons=re_changetg_ikb)
+                await editMessage(call, '🔍 星图中已存在此档案的绑定记录，不可重复绑定，请使用 **星图契约迁跃** 功能。', buttons=re_changetg_ikb)
         else:
-            await editMessage(call, '🔍 数据库已有此账户，不可绑定，请使用 **换绑TG**', buttons=re_changetg_ikb)
+            await editMessage(call, '🔍 星图中已存在此档案的绑定记录，不可重复绑定，请使用 **星图契约迁跃** 功能。', buttons=re_changetg_ikb)
 
 
 # kill yourself
@@ -364,8 +360,8 @@ async def del_me(_, call):
     else:
         if e.embyid is None:
             return await callAnswer(call, '未查询到账户，不许乱点！💢', True)
-        await callAnswer(call, "🔴 请先进行 安全码 验证")
-        edt = await editMessage(call, '**🔰账户安全验证**：\n\n👮🏻验证是否本人进行敏感操作，请对我发送您设置的安全码。倒计时 120s\n'
+        await callAnswer(call, "🔴 请先进行 星尘秘钥 验证")
+        edt = await editMessage(call, '**🔰星图契约安全验证**：\n\n👮🏻星灵需要验证是否为契约者本人进行敏感操作，请对我发送您设置的星尘秘钥。倒计时 120s\n'
                                       '🛑 **停止请点 /cancel**')
         if edt is False:
             return
@@ -385,7 +381,7 @@ async def del_me(_, call):
                                   buttons=del_me_ikb(e.embyid))
             else:
                 await m.delete()
-                await editMessage(call, '**💢 验证不通过，安全码错误。**', re_delme_ikb)
+                await editMessage(call, '**💢 验证不通过，星尘秘钥错误。**', re_delme_ikb)
 
 
 @bot.on_callback_query(filters.regex('delemby'))
@@ -418,8 +414,8 @@ async def reset(_, call):
     if e.embyid is None:
         return await bot.answer_callback_query(call.id, '未查询到账户，不许乱点！💢', show_alert=True)
     else:
-        await callAnswer(call, "🔴 请先进行 安全码 验证")
-        send = await editMessage(call, '**🔰账户安全验证**：\n\n 👮🏻验证是否本人进行敏感操作，请对我发送您设置的安全码。倒计时 120 s\n'
+        await callAnswer(call, "🔴 请先进行 星尘秘钥 验证")
+        send = await editMessage(call, '**🔰星图契约安全验证**：\n\n 👮🏻星灵需要验证是否为契约者本人进行敏感操作，请对我发送您设置的星尘秘钥。倒计时 120 s\n'
                                        '🛑 **停止请点 /cancel**')
         if send is False:
             return
@@ -434,7 +430,7 @@ async def reset(_, call):
         else:
             if m.text != e.pwd2:
                 await m.delete()
-                await editMessage(call, f'**💢 验证不通过，{m.text} 安全码错误。**', buttons=re_reset_ikb)
+                await editMessage(call, f'**💢 验证不通过，您输入的星尘秘钥 {m.text} 似乎不正确。**', buttons=re_reset_ikb)
             else:
                 await m.delete()
                 await editMessage(call, '🎯 请在 120s内 输入你要更新的密码,不限制中英文，emoji。特殊字符部分支持，其他概不负责。\n\n'
@@ -577,13 +573,13 @@ async def do_store_reborn(_, call):
     if not e:
         return
     if not e.embyid or not e.name:
-        return await callAnswer(call, '❌ 未查询到账户，不许乱点！', True)
+        return await callAnswer(call, '❌ 未查询到您的星图契约，无法执行此操作！', True)
     await callAnswer(call,
-                     '✔️ 请仔细阅读：\n\n本功能仅为 因未活跃而被封禁的用户解封使用，到期状态下封禁的账户请勿使用，以免浪费积分。',
+                     '🌌 请仔细阅读：\n\n此功能仅为因星光黯淡而被暂时封印的冒险者解封其星图契约，若契约已到期而被封印，请勿使用此功能，以免浪费星尘。',
                      True)
     if all([e.lv == 'c', e.iv >= _open.exchange_cost, schedall.low_activity]):
         await editMessage(call,
-                          f'🏪 您已满足基础要求，此次将花费 {_open.exchange_cost}{sakura_b} 解除未活跃的封禁，确认请回复 /ok，退出 /cancel')
+                          f'✨ 您已满足基础要求，此次将花费 {_open.exchange_cost}{sakura_b} 唤醒沉睡的星图契约，确认请回复 /ok，退出 /cancel')
         m = await callListen(call, 120, buttons=re_born_ikb)
         if m is False:
             return
@@ -593,15 +589,14 @@ async def do_store_reborn(_, call):
         else:
             sql_update_emby(Emby.tg == call.from_user.id, iv=e.iv - _open.exchange_cost, lv='b')
             await emby.emby_change_policy(e.embyid)
-            LOGGER.info(f'【兑换解封】- {call.from_user.id} 已花费 {_open.exchange_cost}{sakura_b},解除封禁')
+            LOGGER.info(f'【星尘唤醒】- 冒险者 {call.from_user.id} 已花费 {_open.exchange_cost}{sakura_b},唤醒了沉睡的星图契约')
             await asyncio.gather(m.delete(), do_store(_, call),
-                                 sendMessage(call, '解封成功<(￣︶￣)↗[GO!]\n此消息将在20s后自焚', timer=20))
+                                 sendMessage(call, '星图契约已成功唤醒！<(￣︶￣)↗[踏上星途!]\n此星语将在20s后消散', timer=20))
     else:
-        await sendMessage(call, '❌ 不满足以下要求！ヘ(￣ω￣ヘ)\n\n'
-                                '1. 被封禁账户\n'
-                                f'2. 至少持有 {_open.exchange_cost}{sakura_b}\n'
-                                f'3. 【定时策略】活跃检测开启'
-                                f'此消息将在20s后自焚', timer=20)
+        await sendMessage(call, '❌ 冒险者，您不满足以下条件！ヘ(￣ω￣ヘ)\n\n'
+                                '1. 星图契约处于沉睡状态 (非到期封印)\n'
+                                f'2. 至少持有 {_open.exchange_cost}{sakura_b} 星尘\n'
+                                f'3. 星域已启用星光巡检策略\n此星语将在20s后消散', timer=20)
 
 
 @bot.on_callback_query(filters.regex('store-whitelist'))
@@ -619,7 +614,7 @@ async def do_store_whitelist(_, call):
         await callAnswer(call, f'🏪 您已满足 {_open.whitelist_cost} {sakura_b}要求', True)
         sql_update_emby(Emby.tg == call.from_user.id, lv='a', iv=e.iv - _open.whitelist_cost)
         send = await call.message.edit(f'**{random.choice(Yulv.load_yulv().wh_msg)}**\n\n'
-                                       f'🎉 恭喜[{call.from_user.first_name}](tg://user?id={call.from_user.id}) 今日晋升，{ranks["logo"]}白名单')
+                                       f'🎉 恭喜！您的星图契约已获得 {ranks["logo"]} 白名单权限！')
         await send.forward(group[0])
         LOGGER.info(f'【兑换白名单】- {call.from_user.id} 已花费 9999{sakura_b}，晋升白名单')
     else:
