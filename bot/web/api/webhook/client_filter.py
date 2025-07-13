@@ -118,7 +118,7 @@ async def handle_client_filter_webhook(request: Request):
     try:
         # 读取原始请求体
         raw_body = await request.body()
-        LOGGER.info(f"[ClientFilter] 原始请求体: {raw_body.decode('utf-8', errors='ignore')}")
+        # LOGGER.info(f"[ClientFilter] 原始请求体: {raw_body.decode('utf-8', errors='ignore')}")
 
         # 检查Content-Type
         content_type = request.headers.get("content-type", "").lower()

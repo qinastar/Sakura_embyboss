@@ -131,20 +131,20 @@ async def cr_page_server():
 
 """admins ↓"""
 
-gm_ikb_content = ikb([[('⭕ 星门状态', 'open-menu'), ('🎟️ 星符管理', 'cr_link')],
-                      [('💊 查询星图契约', 'ch_link'), ('🏬 星尘兑换设置', 'set_renew')],
-                      [('👥 星际旅者列表', 'normaluser'), ('👑 星域白名单', 'whitelist'), ('💠 探险设备列表', 'user_devices')],
-                      [('🌏 星辰定时任务', 'schedall'), ('🕹️ 返回主控台', 'back_start'), ('其他 🪟', 'back_config')]])
+gm_ikb_content = ikb([[('⭕ 注册开关', 'open-menu'), ('🎟️ 注册码管理', 'cr_link')],
+                      [('💊 查询用户', 'ch_link'), ('🏬 兑换设置', 'set_renew')],
+                      [('👥 用户列表', 'normaluser'), ('👑 白名单用户', 'whitelist'), ('💠 设备列表', 'user_devices')],
+                      [('🌏 定时任务', 'schedall'), ('🕹️ 返回主控台', 'back_start'), ('其他设置 🪟', 'back_config')]])
 
 
 def open_menu_ikb(openstats, timingstats) -> InlineKeyboardMarkup:
-    return ikb([[(f'{openstats} 星门广纳', 'open_stat'), (f'{timingstats} 星辰时刻注册', 'open_timing')],
-                [('🤖 签订契约天数', 'open_us'),('⭕ 契约总量限制', 'all_user_limit')], [('🌟 返回上一级', 'manage')]])
+    return ikb([[(f'{openstats} 开放注册', 'open_stat'), (f'{timingstats} 定时注册', 'open_timing')],
+                [('🤖 注册天数设置', 'open_us'),('⭕ 注册总数限制', 'all_user_limit')], [('🌟 返回上一级', 'manage')]])
 
 
 back_free_ikb = ikb([[('🔙 返回上一级', 'open-menu')]])
-back_open_menu_ikb = ikb([[('🪪 重新设定星辰时刻', 'open_timing'), ('🔙 注册状态', 'open-menu')]])
-re_cr_link_ikb = ikb([[('♻️ 继续生成星符', 'cr_link'), ('🎗️ 返回主控台', 'manage')]])
+back_open_menu_ikb = ikb([[('🪪 重新设置定时', 'open_timing'), ('🔙 注册状态', 'open-menu')]])
+re_cr_link_ikb = ikb([[('♻️ 继续生成', 'cr_link'), ('🎗️ 返回主控台', 'manage')]])
 close_it_ikb = ikb([[('❌ - 湮灭', 'closeit')]])
 
 
@@ -155,9 +155,9 @@ def ch_link_ikb(ls: list) -> InlineKeyboardMarkup:
 
 
 def date_ikb(i) -> InlineKeyboardMarkup:
-    return ikb([[('🌘 - 月', f'register_mon_{i}'), ('🌗 - 季', f'register_sea_{i}'),
+    return ikb([[('🌘 - 月卡', f'register_mon_{i}'), ('🌗 - 季卡', f'register_sea_{i}'),
                  ('🌖 - 半年', f'register_half_{i}')],
-                [('🌕 - 年', f'register_year_{i}'), ('🌑 - 未激活', f'register_unused_{i}'), ('🎟️ - 已激活', f'register_used_{i}')],
+                [('🌕 - 年卡', f'register_year_{i}'), ('🌑 - 未使用', f'register_unused_{i}'), ('🎟️ - 已使用', f'register_used_{i}')],
                 [('🔙 - 返回', 'ch_link')]])
 
 # 翻页按钮
@@ -170,9 +170,9 @@ async def cr_paginate(total_page: int, current_page: int, n) -> InlineKeyboardMa
     """
     keyboard = InlineKeyboard()
     keyboard.paginate(total_page, current_page, 'pagination_keyboard:{number}' + f'_{n}')
-    next = InlineButton('⏭️ 后退+5', f'users_iv:{current_page + 5}-{n}')
-    previous = InlineButton('⏮️ 前进-5', f'users_iv:{current_page - 5}-{n}')
-    followUp = [InlineButton('❌ 湮灭', f'closeit')]
+    next = InlineButton('⏭️ 快进+5', f'users_iv:{current_page + 5}-{n}')
+    previous = InlineButton('⏮️ 快退-5', f'users_iv:{current_page - 5}-{n}')
+    followUp = [InlineButton('❌ 关闭', f'closeit')]
     if total_page > 5:
         if current_page - 5 >= 1:
             followUp.append(previous)
@@ -191,9 +191,9 @@ async def users_iv_button(total_page: int, current_page: int, tg) -> InlineKeybo
     """
     keyboard = InlineKeyboard()
     keyboard.paginate(total_page, current_page, 'users_iv:{number}' + f'_{tg}')
-    next = InlineButton('⏭️ 后退+5', f'users_iv:{current_page + 5}_{tg}')
-    previous = InlineButton('⏮️ 前进-5', f'users_iv:{current_page - 5}_{tg}')
-    followUp = [InlineButton('❌ 湮灭', f'closeit')]
+    next = InlineButton('⏭️ 快进+5', f'users_iv:{current_page + 5}_{tg}')
+    previous = InlineButton('⏮️ 快退-5', f'users_iv:{current_page - 5}_{tg}')
+    followUp = [InlineButton('❌ 关闭', f'closeit')]
     if total_page > 5:
         if current_page - 5 >= 1:
             followUp.append(previous)
@@ -213,9 +213,9 @@ async def plays_list_button(total_page: int, current_page: int, days) -> InlineK
     keyboard = InlineKeyboard()
     keyboard.paginate(total_page, current_page, 'uranks:{number}' + f'_{days}')
     # 添加按钮,前进5, 后退5
-    next = InlineButton('⏭️ 后退+5', f'uranks:{current_page + 5}_{days}')
-    previous = InlineButton('⏮️ 前进-5', f'uranks:{current_page - 5}_{days}')
-    followUp = [InlineButton('❌ 湮灭', 'closeit')]
+    next = InlineButton('⏭️ 快进+5', f'uranks:{current_page + 5}_{days}')
+    previous = InlineButton('⏮️ 快退-5', f'uranks:{current_page - 5}_{days}')
+    followUp = [InlineButton('❌ 关闭', 'closeit')]
     if total_page > 5:
         if current_page - 5 >= 1:
             followUp.append(previous)
@@ -234,8 +234,8 @@ async def store_query_page(total_page: int, current_page: int) -> InlineKeyboard
     """
     keyboard = InlineKeyboard()
     keyboard.paginate(total_page, current_page, 'store-query:{number}')
-    next = InlineButton('⏭️ 后退+5', f'store-query:{current_page + 5}')
-    previous = InlineButton('⏮️ 前进-5', f'store-query:{current_page - 5}')
+    next = InlineButton('⏭️ 快进+5', f'store-query:{current_page + 5}')
+    previous = InlineButton('⏮️ 快退-5', f'store-query:{current_page - 5}')
     followUp = [InlineButton('🔙 返回', 'storeall')]
     if total_page > 5:
         if current_page - 5 >= 1:
@@ -248,8 +248,8 @@ async def store_query_page(total_page: int, current_page: int) -> InlineKeyboard
 async def whitelist_page_ikb(total_page: int, current_page: int) -> InlineKeyboardMarkup:
     keyboard = InlineKeyboard()
     keyboard.paginate(total_page, current_page, 'whitelist:{number}')
-    next = InlineButton('⏭️ 后退+5', f'whitelist:{current_page + 5}')
-    previous = InlineButton('⏮️ 前进-5', f'whitelist:{current_page - 5}')
+    next = InlineButton('⏭️ 快进+5', f'whitelist:{current_page + 5}')
+    previous = InlineButton('⏮️ 快退-5', f'whitelist:{current_page - 5}')
     followUp = [InlineButton('🔙 返回', 'manage')]
     if total_page > 5:
         if current_page - 5 >= 1:
@@ -261,8 +261,8 @@ async def whitelist_page_ikb(total_page: int, current_page: int) -> InlineKeyboa
 async def normaluser_page_ikb(total_page: int, current_page: int) -> InlineKeyboardMarkup:
     keyboard = InlineKeyboard()
     keyboard.paginate(total_page, current_page, 'normaluser:{number}')
-    next = InlineButton('⏭️ 后退+5', f'normaluser:{current_page + 5}')
-    previous = InlineButton('⏮️ 前进-5', f'normaluser:{current_page - 5}')
+    next = InlineButton('⏭️ 快进+5', f'normaluser:{current_page + 5}')
+    previous = InlineButton('⏮️ 快退-5', f'normaluser:{current_page - 5}')
     followUp = [InlineButton('🔙 返回', 'manage')]
     if total_page > 5:
         if current_page - 5 >= 1:
@@ -289,8 +289,8 @@ def devices_page_ikb( has_prev: bool, has_next: bool, page: int) -> InlineKeyboa
 async def favorites_page_ikb(total_page: int, current_page: int) -> InlineKeyboardMarkup:
     keyboard = InlineKeyboard()
     keyboard.paginate(total_page, current_page, 'page_my_favorites:{number}')
-    next = InlineButton('⏭️ 后退+5', f'page_my_favorites:{current_page + 5}')
-    previous = InlineButton('⏮️ 前进-5', f'page_my_favorites:{current_page - 5}')
+    next = InlineButton('⏭️ 快进+5', f'page_my_favorites:{current_page + 5}')
+    previous = InlineButton('⏮️ 快退-5', f'page_my_favorites:{current_page - 5}')
     followUp = [InlineButton('🔙 返回', 'members')]
     if total_page > 5:
         if current_page - 5 >= 1:
@@ -306,25 +306,25 @@ def cr_renew_ikb():
     invite = '✔️' if _open.invite else '❌'
     # 添加邀请等级的显示
     invite_lv_text = {
-        'a': '星域白名单',
-        'b': '普通星际旅者',
-        'c': '已封印契约',
-        'd': '未签订契约'
-    }.get(_open.invite_lv, '未知星等')
+        'a': '白名单用户',
+        'b': '普通用户',
+        'c': '已禁用账户',
+        'd': '未注册用户'
+    }.get(_open.invite_lv, '未知等级')
     keyboard = InlineKeyboard(row_width=2)
-    keyboard.add(InlineButton(f'{checkin} 星辰签到奖励', f'set_renew-checkin'),
-                 InlineButton(f'{exchange} 星尘自动续航', f'set_renew-exchange'),
-                 InlineButton(f'{whitelist} 兑换星域白名单', f'set_renew-whitelist'),
-                 InlineButton(f'{invite} 兑换星符', f'set_renew-invite'),
-                 InlineButton(f'星符生成权限星等: {invite_lv_text}', f'set_invite_lv')
+    keyboard.add(InlineButton(f'{checkin} 签到奖励', f'set_renew-checkin'),
+                 InlineButton(f'{exchange} 自动续费', f'set_renew-exchange'),
+                 InlineButton(f'{whitelist} 兑换白名单', f'set_renew-whitelist'),
+                 InlineButton(f'{invite} 兑换注册码', f'set_renew-invite'),
+                 InlineButton(f'注册码生成权限: {invite_lv_text}', f'set_invite_lv')
                  )
     keyboard.row(InlineButton(f'🫧 返回', 'manage'))
     return keyboard
 
 def invite_lv_ikb():
     keyboard = ikb([
-        [('🅰️ 星域白名单', 'set_invite_lv-a'), ('🅱️ 普通星际旅者', 'set_invite_lv-b')],
-        [('©️ 已封印契约', 'set_invite_lv-c'), ('🅳️ 未签订契约', 'set_invite_lv-d')],
+        [('🅰️ 白名单用户', 'set_invite_lv-a'), ('🅱️ 普通用户', 'set_invite_lv-b')],
+        [('©️ 已禁用账户', 'set_invite_lv-c'), ('🅳️ 未注册用户', 'set_invite_lv-d')],
         [('🔙 返回', 'set_renew')]
     ])
     return keyboard
@@ -342,12 +342,12 @@ def config_preparation() -> InlineKeyboardMarkup:
     allow_private = '✅' if red_envelope.allow_private else '❎'
     keyboard = ikb(
         [[('📄 导出日志', 'log_out'), ('📌 设置探针', 'set_tz')],
-         [('🎬 显/隐指定库', 'set_block'), (f'{fuxx_pt} 皮套人过滤功能', 'set_fuxx_pitao')],
-         [('💠 普通用户线路', 'set_line'),('🌟 白名单线路', 'set_whitelist_line')],
-         [(f'{leave_ban} 退群封禁', 'leave_ban'), (f'{uplays} 观影奖励结算', 'set_uplays')],
-         [(f'{auto_up} 自动更新bot', 'set_update'), (f'{mp_set} Moviepilot点播', 'set_mp')],
-         [(f'{red_envelope_status} 红包', 'set_red_envelope_status'), (f'{allow_private} 专属红包', 'set_red_envelope_allow_private')],
-         [(f'设置赠送资格天数({kk_gift_days}天)', 'set_kk_gift_days')],
+         [('🎬 媒体库显隐', 'set_block'), (f'{fuxx_pt} 用户过滤', 'set_fuxx_pitao')],
+         [('💠 普通线路设置', 'set_line'),('🌟 白名单线路设置', 'set_whitelist_line')],
+         [(f'{leave_ban} 退群封禁', 'leave_ban'), (f'{uplays} 观影奖励', 'set_uplays')],
+         [(f'{auto_up} 自动更新', 'set_update'), (f'{mp_set} 点播功能', 'set_mp')],
+         [(f'{red_envelope_status} 红包功能', 'set_red_envelope_status'), (f'{allow_private} 专属红包', 'set_red_envelope_allow_private')],
+         [(f'赠送天数设置({kk_gift_days}天)', 'set_kk_gift_days')],
          [('🔙 返回', 'manage')]])
     return keyboard
 
@@ -374,12 +374,12 @@ async def cr_kk_ikb(uid, first):
     keyboard = []
     data = await members_info(uid)
     if data is None:
-        text += f'**· 🆔 TG** ：[{first}](tg://user?id={uid}) [`{uid}`]\n星图数据库中没有此星际旅者。ta 尚未与星灵建立连接'
+        text += f'**· 🆔 TG** ：[{first}](tg://user?id={uid}) [`{uid}`]\n数据库中没有此用户信息，用户尚未注册'
     else:
         name, lv, ex, us, embyid, pwd2 = data
         if name != '无账户信息':
-            ban = "🌟 解除封印" if lv == "**已禁用**" else '💢 封印契约'
-            keyboard = [[ban, f'user_ban-{uid}'], ['⚠️ 回收星图契约', f'closeemby-{uid}']]
+            ban = "🌟 解除封禁" if lv == "**已禁用**" else '💢 封禁用户'
+            keyboard = [[ban, f'user_ban-{uid}'], ['⚠️ 删除账户', f'closeemby-{uid}']]
             if len(extra_emby_libs) > 0:
                 success, rep = emby.user(embyid=embyid)
                 if success:
@@ -390,24 +390,24 @@ async def cr_kk_ikb(uid, first):
                     # 此处符号用于展示是否开启的状态
                     libs, embyextralib = ['✖️', f'embyextralib_unblock-{uid}'] if set(extra_emby_libs).issubset(
                         set(currentblock)) else ['✔️', f'embyextralib_block-{uid}']
-                    keyboard.append([f'{libs} 额外星路', embyextralib])
+                    keyboard.append([f'{libs} 额外媒体库', embyextralib])
             try:
                 rst = await emby.emby_cust_commit(user_id=embyid, days=30)
                 last_time = rst[0][0]
                 toltime = rst[0][1]
-                text1 = f"**· 🔋 上次星光闪耀** | {last_time.split('.')[0]}\n" \
-                        f"**· 📅 过去30天星图活跃度** | {toltime} min"
+                text1 = f"**· 🔋 最后活跃时间** | {last_time.split('.')[0]}\n" \
+                        f"**· 📅 过去30天观看时长** | {toltime} 分钟"
             except (TypeError, IndexError, ValueError):
-                text1 = f"**· 📅 过去30天星图未有活跃记录**"
+                text1 = f"**· 📅 过去30天无观看记录**"
         else:
-            keyboard.append(['✨ 赠予星图契约', f'gift-{uid}'])
-        text += f"**· 🌠 星际旅者档案**\n" \
-                f"**· 📊 契约状态** | {lv}\n" \
-                f"**· 🍥 持有{sakura_b}** | {us}\n" \
-                f"**· 💠 星图昵称** | {name}\n" \
-                f"**· 🚨 契约期限** | **{ex}**\n"
+            keyboard.append(['✨ 赠送账户', f'gift-{uid}'])
+        text += f"**· 👤 用户档案**\n" \
+                f"**· 📊 账户状态** | {lv}\n" \
+                f"**· 🍥 余额** | {us}\n" \
+                f"**· 💠 用户名** | {name}\n" \
+                f"**· 🚨 到期时间** | **{ex}**\n"
         text += text1
-        keyboard.extend([['🚫 驱逐出星域', f'fuckoff-{uid}'], ['❌ 湮灭此消息', f'closeit']])
+        keyboard.extend([['🚫 踢出群组', f'fuckoff-{uid}'], ['❌ 关闭消息', f'closeit']])
         lines = array_chunk(keyboard, 2)
         keyboard = ikb(lines)
     return text, keyboard
@@ -434,13 +434,13 @@ def sched_buttons():
     low_activity = '✅' if schedall.low_activity else '❎'
     backup_db = '✅' if schedall.backup_db else '❎'
     keyboard = InlineKeyboard(row_width=2)
-    keyboard.add(InlineButton(f'{dayrank} 星光日榜', f'sched-dayrank'),
-                 InlineButton(f'{weekrank} 星光周榜', f'sched-weekrank'),
-                 InlineButton(f'{dayplayrank} 星图活跃日榜', f'sched-dayplayrank'),
-                 InlineButton(f'{weekplayrank} 星图活跃周榜', f'sched-weekplayrank'),
-                 InlineButton(f'{check_ex} 契约到期处理', f'sched-check_ex'),
-                 InlineButton(f'{low_activity} 星光黯淡处理', f'sched-low_activity'),
-                 InlineButton(f'{backup_db} 星图备份', f'sched-backup_db')
+    keyboard.add(InlineButton(f'{dayrank} 日播放榜', f'sched-dayrank'),
+                 InlineButton(f'{weekrank} 周播放榜', f'sched-weekrank'),
+                 InlineButton(f'{dayplayrank} 日活跃榜', f'sched-dayplayrank'),
+                 InlineButton(f'{weekplayrank} 周活跃榜', f'sched-weekplayrank'),
+                 InlineButton(f'{check_ex} 到期处理', f'sched-check_ex'),
+                 InlineButton(f'{low_activity} 低活跃处理', f'sched-low_activity'),
+                 InlineButton(f'{backup_db} 数据库备份', f'sched-backup_db')
                  )
     keyboard.row(InlineButton(f'🫧 返回', 'manage'))
     return keyboard
@@ -514,13 +514,13 @@ def mp_config_ikb():
     mp_status = '✅' if moviepilot.status else '❎'
     lv_text = '无'
     if moviepilot.lv == 'a':
-        lv_text = '星域白名单'
+        lv_text = '白名单用户'
     elif moviepilot.lv == 'b':
-        lv_text = '普通星际旅者'
+        lv_text = '普通用户'
     keyboard = ikb([
-        [(f'{mp_status} 星域点播功能', 'set_mp_status')],
-        [('💰 设置星尘消耗', 'set_mp_price'), ('👥 设置点播权限星等', 'set_mp_lv')],
-        [('📝 设置点播日志星图', 'set_mp_log_channel')],
+        [(f'{mp_status} 点播功能开关', 'set_mp_status')],
+        [('💰 设置点播价格', 'set_mp_price'), ('👥 设置权限等级', 'set_mp_lv')],
+        [('📝 设置日志频道', 'set_mp_log_channel')],
         [('🔙 返回', 'back_config')]
     ])
     return keyboard

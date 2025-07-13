@@ -94,11 +94,11 @@ async def search_site_resources(call, keyword, page=1, all_result=None):
     """搜索站点资源并显示结果"""
     try:
         if page == 1:
-            await editMessage(call.message, '🔍 正在搜索站点资源，请稍后...')
+            await editMessage(call.message, '🔍 正在搜索资源，请稍后...')
         if all_result is None:
             success, all_result = await search(keyword)
             if not success:
-                await editMessage(call.message, '🤷‍♂️ 搜索站点资源失败，请稍后再试', buttons=re_download_center_ikb)
+                await editMessage(call.message, '🤷‍♂️ 搜索资源失败，请稍后再试', buttons=re_download_center_ikb)
                 return
         if all_result is None or len(all_result) == 0:
             await editMessage(call.message, '🤷‍♂️ 没有找到相关资源', buttons=re_download_center_ikb)
@@ -214,7 +214,7 @@ async def handle_resource_selection(call, result):
                 success, download_id = await add_download_task(param)
                 user_search_data.pop(call.from_user.id, None)
                 if success:
-                    log = f"【下载任务】：#{call.from_user.id} [{call.from_user.first_name}] 已成功添加到下载队列，下载ID：{download_id}\n此次消耗 {need_cost}{sakura_b}"
+                    log = f"【下载任务】已成功添加到下载队列，下载ID：{download_id}\n此次消耗 {need_cost}{sakura_b}"
                     download_log = f"{log}\n详情：{result[index-1]['tg_log']}"
                     LOGGER.info(log)
                     sql_update_emby(Emby.tg == call.from_user.id,
