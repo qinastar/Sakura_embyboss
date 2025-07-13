@@ -107,5 +107,20 @@
     "allow_origins": [
       "*"
     ]
+  },
+  "forward": {
+    "scheme": "https",
+    "host": "your-emby-server.com",
+    "port": 443,
+    "lines": [
+      {
+        "url": "https://line1.example.com",
+        "title": "线路1"
+      },
+      {
+        "url": "https://line2.example.com:8096",
+        "title": "线路2"
+      }
+    ]
   }
 }

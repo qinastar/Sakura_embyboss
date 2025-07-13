@@ -119,11 +119,12 @@ async def cr_page_server():
     """
     sever = nezha_res.sever_info(tz_ad, tz_api, tz_id)
     if not sever:
-        return ikb([[('🔙 - 用户', 'members'), ('❌ - 上一级', 'back_start')]]), None
+        return ikb([[('📱 导入Forward', 'forward_import')], [('🔙 - 用户', 'members'), ('❌ - 上一级', 'back_start')]]), None
     d = []
     for i in sever:
         d.append([i['name'], f'server:{i["id"]}'])
     lines = array_chunk(d, 3)
+    lines.insert(0, [['📱 导入Forward', 'forward_import']])
     lines.append([['🔙 - 用户', 'members'], ['❌ - 上一级', 'back_start']])
     # keyboard是键盘，a是sever
     return ikb(lines), sever
@@ -365,7 +366,7 @@ def try_set_buy(ls: list) -> InlineKeyboardMarkup:
 
 """ other """
 register_code_ikb = ikb([[('🎟️ 注册', 'create'), ('⭕ 取消', 'closeit')]])
-dp_g_ikb = ikb([[("🈺 ╰(￣ω￣ｏ)", "t.me/Aaaaa_su", "url")]])
+dp_g_ikb = ikb([[("🈺 ╰(￣ω￣ｏ)", "t.me/edge_emby", "url")]])
 
 
 async def cr_kk_ikb(uid, first):

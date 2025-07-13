@@ -130,6 +130,16 @@ class RedEnvelope(BaseModel):
     status: bool = True  # 是否开启红包
     allow_private: bool = True # 是否允许专属红包
 
+class ForwardLine(BaseModel):
+    url: str
+    title: str
+
+class Forward(BaseModel):
+    scheme: str = "https"
+    host: str = "your-emby-server.com"
+    port: int = 443
+    lines: Optional[List[ForwardLine]] = []
+
 class Config(BaseModel):
     bot_name: str
     bot_token: str
@@ -183,6 +193,7 @@ class Config(BaseModel):
     auto_update: AutoUpdate = Field(default_factory=AutoUpdate)
     red_envelope: RedEnvelope = Field(default_factory=RedEnvelope)
     api: API = Field(default_factory=API)
+    forward: Forward = Field(default_factory=Forward)
 
     def __init__(self, **data):
         super().__init__(**data)
