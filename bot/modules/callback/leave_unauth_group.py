@@ -32,26 +32,24 @@ async def anti_use_bot(_, msg):
     if msg.from_user is not None:
         try:
             await bot.send_message(owner,
-                                   f"[{msg.from_user.first_name}](tg://user?id={msg.from_user.id})"
-                                   f"[`{msg.from_user.id}`]试图将bot拉入 `{msg.chat.id}` 已被发现")
+                                   f"🌌 一位神秘的冒险者({msg.from_user.id}) 尝试将星灵引入未认证的星域({msg.chat.id})，此举已被星灵察觉。")
             asyncio.create_task(leave_bot(msg.chat.id))
             await bot.send_message(msg.chat.id,
-                                   f'❎ 这并非一个授权群组！！！[`{msg.chat.id}`]\n\n本bot将在 **30s** 自动退出如有疑问请联系开发👇',
+                                   f'❎ 这里并非星灵允许降临的星域！！！\n\n本星灵将在 **30s** 自动返回，如需指引前往已认证的星域，请联系星域守护者👇',
                                    reply_markup=dp_g_ikb)
-            LOGGER.info(f"【[{msg.from_user.first_name}](tg://user?id={msg.from_user.id})"
-                        f"[`{msg.from_user.id}`]试图将bot拉入 `{msg.chat.id}` 已被发现】")
+            LOGGER.info(f"【一位冒险者({msg.from_user.id}) 尝试将星灵引入星域({msg.chat.id}) 被察觉】")
         except Exception as e:
             # 记录异常信息
             LOGGER.error(e)
 
     elif msg.from_user is None:
         try:
-            await bot.send_message(chat_id=owner, text=f'有坏蛋 试图将bot拉入 `{msg.chat.id}` 已被发现')
+            await bot.send_message(chat_id=owner, text=f'🌌 一股未知力量 尝试将星灵引入未认证的星域({msg.chat.id})，此举已被星灵察觉。')
             asyncio.create_task(leave_bot(msg.chat.id))
             await bot.send_message(msg.chat.id,
-                                   f'❎ 这并非一个授权群组！！！[`{msg.chat.id}`]\n\n本bot将在 **30s** 自动退出如有疑问请联系开发👇',
+                                   f'❎ 这里并非星灵允许降临的星域！！！\n\n本星灵将在 **30s** 自动返回，如需指引前往已认证的星域，请联系星域守护者👇',
                                    reply_markup=dp_g_ikb)
-            LOGGER.info(f"【有坏蛋试图将bot拉入 `{msg.chat.id}` 已被发现】")
+            LOGGER.info(f"【未知力量 尝试将星灵引入星域({msg.chat.id}) 被察觉】")
         except Exception as e:
             # 记录异常信息
             LOGGER.error(e)

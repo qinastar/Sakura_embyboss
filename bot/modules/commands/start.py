@@ -23,7 +23,7 @@ from bot import bot, prefixes, group, bot_photo, ranks, sakura_b
 async def ui_g_command(_, msg):
     await asyncio.gather(deleteMessage(msg),
                          sendMessage(msg,
-                                     f"🤖 亲爱的 [{msg.from_user.first_name}](tg://user?id={msg.from_user.id}) 这是一条私聊命令",
+                                     f"(｡♥‿♥｡) 亲爱的主人～这个指令需要私聊星灵才能使用哦！\n\n✨ 请点击机器人头像或发送 /start 开始你的星际冒险吧！",
                                      buttons=group_f, timer=60))
 
 
@@ -50,8 +50,10 @@ async def p_start(_, msg):
     if not await user_in_group_filter(_, msg):
         return await asyncio.gather(deleteMessage(msg),
                                     sendMessage(msg,
-                                                '💢 拜托啦！请先点击下面加入我们的群组和频道，然后再 /start 一下好吗？\n\n'
-                                                '⁉️ ps：如果您已在群组中且收到此消息，请联系管理员解除您的权限限制，因为被限制用户无法使用本bot。',
+                                                '(╥﹏╥) 呜呜呜～检测到你还没有加入我们的星际大家庭！\n\n💖 **需要先做这些才能使用星灵服务哦：**\n'
+                                                '🌟 1. 加入我们的 **群组** (日常交流)\n'
+                                                '🌟 2. 关注我们的 **频道** (重要通知)\n\n'
+                                                '✨ 加入后再来找星灵，我会为你开启专属的星际账户～(๑•̀ㅂ•́)و✧',
                                                 buttons=judge_group_ikb))
     try:
         u = msg.command[1].split('-')[0]
@@ -60,11 +62,11 @@ async def p_start(_, msg):
             if judge_admins(msg.from_user.id):
                 return await user_cha_ip(_, msg, name)
             else:
-                return await sendMessage(msg, '💢 你不是管理员，无法使用此命令')
+                return await sendMessage(msg, '(｡>﹏<｡) 呀～你不是管理员，无法使用此指令哦！')
         if u in f'{ranks.logo}' or u == str(msg.from_user.id):
             await asyncio.gather(msg.delete(), rgs_code(_, msg, register_code=msg.command[1]))
         else:
-            await asyncio.gather(sendMessage(msg, '🤺 你也想和bot击剑吗 ?'), msg.delete())
+            await asyncio.gather(sendMessage(msg, '(´⊙ω⊙`) 咦？这个注册码好像有问题诶～\n\n请检查是不是从官方渠道获取的正确星符哦！'), msg.delete())
     except (IndexError, TypeError):
         data = await members_info(tg=msg.from_user.id)
         is_admin = judge_admins(msg.from_user.id)
@@ -72,27 +74,27 @@ async def p_start(_, msg):
             sql_add_emby(msg.from_user.id)
             await asyncio.gather(deleteMessage(msg),
                                  sendPhoto(msg, bot_photo,
-                                           f"**✨ 只有你想见我的时候我们的相遇才有意义**\n\n"
-                                           f"🍉__你好鸭 [{msg.from_user.first_name}](tg://user?id={msg.from_user.id}) \n\n"
-                                           f"初次使用，录入数据库完成。\n"
-                                           f"请点击 /start 重新召唤面板"))
+                                           f"**✨ 初次相遇，命运的星光开始闪耀～**\n\n"
+                                           f"(◕‿◕)♡ **你好呀，新的冒险者！**\n\n"
+                                           f"🌟 星灵已为你创建专属档案，星际旅程即将开始！\n"
+                                           f"💫 请再次发送 /start 来打开你的冒险者面板吧～"))
             return
         name, lv, ex, us, embyid, pwd2 = data
         stat, all_user, tem, timing = await open_check()
-        text = f"▎__欢迎进入用户面板！{msg.from_user.first_name}__\n\n" \
-               f"**· 🆔 用户のID** | `{msg.from_user.id}`\n" \
-               f"**· 📊 当前状态** | {lv}\n" \
-               f"**· 🍒 积分{sakura_b}** | {us}\n" \
-               f"**· ®️ 注册状态** | {stat}\n" \
-               f"**· 🎫 总注册限制** | {all_user}\n" \
-               f"**· 🎟️ 可注册席位** | {all_user - tem}\n"
+        text = (f"✧٩(ˊωˋ*)و✧ **星灵控制中心**\n\n"
+               f"**🆔 冒险者编号** | `{msg.from_user.id}`\n" \
+               f"**⭐ 当前星级** | {lv}\n"
+               f"**💰 星尘余额** | {us}\n"
+               f"**🎪 注册状态** | {stat}\n"
+               f"**👥 总席位数** | {all_user}\n"
+               f"**🎫 剩余席位** | {all_user - tem}\n")
         if not embyid:
             await asyncio.gather(deleteMessage(msg),
                                  sendPhoto(msg, bot_photo, caption=text, buttons=judge_start_ikb(is_admin, False)))
         else:
             await asyncio.gather(deleteMessage(msg),
                                  sendPhoto(msg, bot_photo,
-                                           f"**✨ 只有你想见我的时候我们的相遇才有意义**\n\n🍉__你好鸭 [{msg.from_user.first_name}](tg://user?id={msg.from_user.id}) 请选择功能__👇",
+                                           f"**✨ 星灵感应到了熟悉的气息～**\n\n(｡♥‿♥｡) **欢迎回来，我的冒险者！**\n\n💖 请选择你想要的星灵服务吧～",
                                            buttons=judge_start_ikb(is_admin, True)))
 
 
@@ -101,23 +103,28 @@ async def p_start(_, msg):
 async def b_start(_, call):
     if await user_in_group_filter(_, call):
         is_admin = judge_admins(call.from_user.id)
-        await asyncio.gather(callAnswer(call, "⭐ 返回start"),
+        await asyncio.gather(callAnswer(call, "⭐ 返回星港"),
                              editMessage(call,
-                                         text=f"**✨ 只有你想见我的时候我们的相遇才有意义**\n\n🍉__你好鸭 [{call.from_user.first_name}](tg://user?id={call.from_user.id}) 请选择功能__👇",
+                                         text=f"**✨ 星灵感应到了熟悉的气息～**\n\n(｡♥‿♥｡) **欢迎回来，我的冒险者！**\n\n💖 请选择你想要的星灵服务吧～",
                                          buttons=judge_start_ikb(is_admin, account=True)))
     elif not await user_in_group_filter(_, call):
-        await asyncio.gather(callAnswer(call, "⭐ 返回start"),
-                             editMessage(call, text='💢 拜托啦！请先点击下面加入我们的群组和频道，然后再 /start 一下好吗？\n\n'
-                                                    '⁉️ ps：如果您已在群组中且收到此消息，请联系管理员解除您的权限限制，因为被限制用户无法使用本bot。',
+        await asyncio.gather(callAnswer(call, "⭐ 返回星港"),
+                             editMessage(call, text='(╥﹏╥) 呜呜呜～检测到你还没有加入我们的星际大家庭！\n\n💖 **需要先做这些才能使用星灵服务哦：**\n'
+                                                  '🌟 1. 加入我们的 **群组** (日常交流)\n'
+                                                  '🌟 2. 关注我们的 **频道** (重要通知)\n\n'
+                                                  '✨ 加入后再来找星灵，我会为你开启专属的星际账户～(๑•̀ㅂ•́)و✧',
                                          buttons=judge_group_ikb))
 
 
 @bot.on_callback_query(filters.regex('store_all'))
 async def store_alls(_, call):
     if not await user_in_group_filter(_, call):
-        await asyncio.gather(callAnswer(call, "⭐ 返回start"),
+        await asyncio.gather(callAnswer(call, "⭐ 返回星港"),
                              deleteMessage(call), sendPhoto(call, bot_photo,
-                                                            '💢 拜托啦！请先点击下面加入我们的群组和频道，然后再 /start 一下好吗？',
+                                                            '(╥﹏╥) 呜呜呜～检测到你还没有加入我们的星际大家庭！\n\n💖 **需要先做这些才能使用星灵服务哦：**\n'
+                                                            '🌟 1. 加入我们的 **群组** (日常交流)\n'
+                                                            '🌟 2. 关注我们的 **频道** (重要通知)\n\n'
+                                                            '✨ 加入后再来找星灵，我会为你开启专属的星际账户～(๑•̀ㅂ•́)و✧',
                                                             judge_group_ikb))
     elif await user_in_group_filter(_, call):
-        await callAnswer(call, '⭕ 正在编辑', True)
+        await callAnswer(call, '⭕ 星灵正在施法中...', True)

@@ -66,7 +66,12 @@ async def pro_user(_, msg):
         sign_name = f'{msg.sender_chat.title}' if msg.sender_chat else f'[{msg.from_user.first_name}](tg://user?id={msg.from_user.id})'
         await asyncio.gather(deleteMessage(msg), sendMessage(msg,
                                                              f"**{random.choice(Yulv.load_yulv().wh_msg)}**\n\n"
-                                                             f"🎉 恭喜 [{first.first_name}](tg://user?id={uid}) 获得 {sign_name} 签出的白名单."))
+                                                             f"✨ **星域守望者的宣告** ✨\n"
+                                                             f"🌟 **荣光照耀，星辉璀璨！**\n"
+                                                             f"🎉 一位心怀大爱的星际旅者，通过**无私的公益捐赠**，点亮了星图上的荣耀之光！\n"
+                                                             f"📜 伟大契约已签订，**星域白名单**为你开启！\n"
+                                                             f"🌌 愿这份善意汇聚成无尽星尘，指引你在浩瀚宇宙中书写属于你的传奇！\n"
+                                                             f"感谢您的伟大贡献！"))
     else:
         return await sendMessage(msg, '⚠️ 数据库执行错误')
     LOGGER.info(f"【admin】：{msg.from_user.id} 新更新 白名单 {first.first_name}-{uid}")
@@ -115,7 +120,9 @@ async def rev_user(_, msg):
     if sql_update_emby(Emby.tg == uid, lv='b'):
         sign_name = f'{msg.sender_chat.title}' if msg.sender_chat else f'[{msg.from_user.first_name}](tg://user?id={msg.from_user.id})'
         await asyncio.gather(sendMessage(msg,
-                                         f"🤖 很遗憾 [{first.first_name}](tg://user?id={uid}) 被 {sign_name} 移出白名单."),
+                                         f"🌑『命运的齿轮悄然转动……』\n\n"
+                                         f"🦄 神秘旅者已悄然离开白名单的圣域。\n"
+                                         f"✨ 但星辰之门，永远为勇者留一丝希望！"),
                              deleteMessage(msg))
     else:
         return await sendMessage(msg, '⚠️ 数据库执行错误')

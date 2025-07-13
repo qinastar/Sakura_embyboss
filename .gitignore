@@ -11,5 +11,12 @@ gen
 !/keaiji_bot.session-journal
 __pycache__
 log
+log2
 *.sql
 bot-env
+config.json
+config2.json
+config.json
+dev.md
+docker-compose.yml
+docker-compose.yaml

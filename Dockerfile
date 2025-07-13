@@ -35,8 +35,8 @@ WORKDIR ${WORKDIR}
 COPY --from=builder /usr/local/lib/python3.10/site-packages /usr/local/lib/python3.10/site-packages
 COPY --from=builder /usr/local/bin /usr/local/bin
 
-# 复制本地项目代码
-COPY . .
+# 复制项目代码
+COPY . ${WORKDIR}
 # 设置启动命令
 ENTRYPOINT [ "python3" ]
 CMD [ "main.py" ]

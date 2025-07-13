@@ -1,11 +1,30 @@
 services:
   embyboss:
-    image: qinayui/sakura_embyboss:latest # ARM与AMD镜像名称相同，会自动加载适合的镜像
+    image: qinayui/sakura_embyboss:latest
     container_name: embyboss
     restart: always
-    network_mode: host
+    networks:
+      yui:
+        ipv4_address: 172.30.0.21
     volumes:
       - ./config.json:/app/config.json
       - ./log:/app/log
-#    ports:
-#      - '8838:8838' # 为api服务映射端口 host模式无需操作
+    ports:
+      - '22100:8838'
+
+  embyboss2:
+    image: qinayui/sakura_embyboss:latest
+    container_name: embyboss2
+    restart: always
+    networks:
+      yui:
+        ipv4_address: 172.30.0.22
+    volumes:
+      - ./config2.json:/app/config.json
+      - ./log2:/app/log
+    ports:
+      - '22200:8838'
+
+networks:
+  yui:
+    external: true

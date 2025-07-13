@@ -71,7 +71,7 @@ async def fuxx_pitao(_, msg):
     # if config.fuxx_pitao:
     try:
         await asyncio.gather(msg.delete(),
-                             msg.reply(f'🎯 自动狙杀皮套人！{msg.sender_chat.title} - `{msg.sender_chat.id}`'))
+                             msg.reply(f'⚠️ 发现异常星图印记！未知信号源 {msg.sender_chat.title} - `{msg.sender_chat.id}` 已被隔离。'))
         await msg.chat.ban_member(msg.sender_chat.id)
         LOGGER.info(
             f'【AntiChannel】- {msg.sender_chat.title} - {msg.sender_chat.id} 被封禁')

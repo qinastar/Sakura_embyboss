@@ -45,7 +45,7 @@ class Uplaysinfo:
                 }
 
             rank_medals = ["🥇", "🥈", "🥉", "🏅"]
-            rank_points = [1000, 900, 800, 700, 600, 500, 400, 300, 200, 100]
+            rank_points = [100, 90, 80, 70, 60, 50, 40, 30, 20, 10]
 
             pages_data = []
             leaderboard_data = []
@@ -73,7 +73,7 @@ class Uplaysinfo:
                         leaderboard_data.append([member_info["tg"], new_iv, f'{medal}{emby_name}', points])
 
                     formatted_time = await convert_s(int(play_record[1]))
-                    page_data += f'{medal}**第{cn2an.an2cn(rank)}名** | [{emby_name}](https://www.google.com/search?q={tg})\n' \
+                    page_data += f'{medal}**第{cn2an.an2cn(rank)}名** | {emby_name}\n' \
                                  f'  观影时长 | {formatted_time}\n'
 
                 page_data += f'\n#UPlaysRank {datetime.now(timezone(timedelta(hours=8))).strftime("%Y-%m-%d")}'
@@ -86,22 +86,22 @@ class Uplaysinfo:
         a, n, ls = await Uplaysinfo.users_playback_list(days)
         if not a:
             return await bot.send_photo(chat_id=group[0], photo=bot_photo,
-                                        caption=f'🍥 获取过去{days}天UserPlays失败了嘤嘤嘤 ~ 手动重试 ')
+                                        caption=f'🍥 星灵在汇聚星辰之力，过去{days}天星图活跃榜暂时无法绘制~ 请稍后再试吧！')
         play_button = await plays_list_button(n, 1, days)
         send = await bot.send_photo(chat_id=group[0], photo=bot_photo, caption=a[0], reply_markup=play_button)
         if uplays and _open.uplays:
             if sql_update_embys(some_list=ls, method='iv'):
-                text = f'**自动将观看时长转换为{sakura_b}**\n\n'
+                text = f'**✨ 星光奖励已发放！**\n\n'
                 for i in ls:
-                    text += f'[{i[2]}](tg://user?id={i[0]}) 获得了 {i[3]} {sakura_b}奖励\n'
+                    text += f'一位幸运的冒险者获得了 {i[3]} {sakura_b}星尘奖励\n'
                 n = 4096
                 chunks = [text[i:i + n] for i in range(0, len(text), n)]
                 for c in chunks:
                     await bot.send_message(chat_id=group[0],
-                                           text=c + f'\n⏱️ 当前时间 - {datetime.now().strftime("%Y-%m-%d")}')
+                                           text=c + f'\n⏱️ 当前星辰时刻 - {datetime.now().strftime("%Y-%m-%d")}')
                 LOGGER.info(f'【userplayrank】： ->成功 数据库执行批量操作{ls}')
             else:
-                await send.reply(f'**🎂！！！为用户增加{sakura_b}出错啦** @工程师看看吧~ ')
+                await send.reply(f'**🎂！！！星灵在分发星尘奖励时遇到宇宙风暴，请星域守护者关注~ **')
                 LOGGER.error(f'【userplayrank】：-？失败 数据库执行批量操作{ls}')
 
     @staticmethod
@@ -130,10 +130,10 @@ class Uplaysinfo:
                             sql_update_emby(Emby.embyid == e.embyid, embyid=None, name=None, pwd=None, pwd2=None, lv='d',
                                             cr=None, ex=None)
                             tem_deluser()
-                            msg += f'**🔋活跃检测** - [{e.name}](tg://user?id={e.tg})\n#id{e.tg} 禁用后未解禁，已执行删除。\n\n'
+                            msg += f'**🔋星光黯淡处理** - 一位迷失在星海的旅者因星图契约沉睡已久，被宇宙悄然回收。**\n\n'
                             LOGGER.info(f"【活跃检测】- 删除账户 {user['Name']} #id{e.tg}")
                         else:
-                            msg += f'**🔋活跃检测** - [{e.name}](tg://user?id={e.tg})\n#id{e.tg} 禁用后未解禁，执行删除失败。\n\n'
+                            msg += f'**🔋星光黯淡处理** - 一位迷失在星海的旅者因星图契约沉睡已久，宇宙回收未成功。**\n\n'
                             LOGGER.info(f"【活跃检测】- 删除账户失败 {user['Name']} #id{e.tg}")
             elif e.lv == 'b':
                 try:
@@ -142,18 +142,18 @@ class Uplaysinfo:
                     if ac_date + timedelta(days=21) < now:
                         if await emby.emby_change_policy(id=user["Id"], method=True):
                             sql_update_emby(Emby.embyid == user["Id"], lv='c')
-                            msg += f"**🔋活跃检测** - [{user['Name']}](tg://user?id={e.tg})\n#id{e.tg} 21天未活跃，禁用\n\n"
+                            msg += f"**🔋星光黯淡处理** - 一位沉睡的星际旅者，星光连续21天未闪耀，星图契约将暂时沉睡。**\n\n"
                             LOGGER.info(f"【活跃检测】- 禁用账户 {user['Name']} #id{e.tg}：21天未活跃")
                         else:
-                            msg += f"**🎂活跃检测** - [{user['Name']}](tg://user?id={e.tg})\n21天未活跃，禁用失败啦！检查emby连通性\n\n"
+                            msg += f"**🎂星光黯淡处理** - 一位沉睡的星际旅者，星图契约沉睡未能成功，请检查星之服务器连通性。**\n\n"
                             LOGGER.info(f"【活跃检测】- 禁用账户 {user['Name']} #id{e.tg}：禁用失败啦！检查emby连通性")
                 except KeyError:
                     if await emby.emby_change_policy(id=user["Id"], method=True):
                         sql_update_emby(Emby.embyid == user["Id"], lv='c')
-                        msg += f"**🔋活跃检测** - [{user['Name']}](tg://user?id={e.tg})\n#id{e.tg} 注册后未活跃，禁用\n\n"
+                        msg += f"**🔋星光黯淡处理** - 一位沉睡的星际旅者，注册后未闪耀星光，星图契约已暂时沉睡。**\n\n"
                         LOGGER.info(f"【活跃检测】- 禁用账户 {user['Name']} #id{e.tg}：注册后未活跃禁用")
                     else:
-                        msg += f"**🎂活跃检测** - [{user['Name']}](tg://user?id={e.tg})\n#id{e.tg} 注册后未活跃，禁用失败啦！检查emby连通性\n\n"
+                        msg += f"**🎂星光黯淡处理** - 一位沉睡的星际旅者，注册后未闪耀星光，星图契约沉睡未能成功，请检查星之服务器连通性。**\n\n"
                         LOGGER.info(f"【活跃检测】- 禁用账户 {user['Name']} #id{e.tg}：禁用失败啦！检查emby连通性")
         n = 1000
         chunks = [msg[i:i + n] for i in range(0, len(msg), n)]
