@@ -29,8 +29,8 @@ from bot.sql_helper.sql_emby2 import sql_get_emby2, sql_delete_emby2
 # 创号函数
 async def create_user(_, call, us, stats):
     msg = await ask_return(call,
-                           text='🤖**注意：您已进入星图契约签订流程:\n\n• 请在2分钟内输入 `[星图昵称][空格][星尘秘钥]`\n• 举个例子🌰：`苏苏 1234`**\n\n• 星图昵称中不限制中/英文/emoji，🚫**特殊字符**'
-                                '\n• 星尘秘钥为敏感操作时附加验证，请填入最熟悉的数字4~6位；退出请点 /cancel', timer=120,
+                           text='🤖**注意：您已进入契约签订流程:\n\n• 请在2分钟内输入 `[用户名][空格][安全秘钥]`\n• 举个例子🌰：`苏苏 1234`**\n\n• 星图昵称中不限制中/英文/emoji，🚫**特殊字符**'
+                                '\n• 安全秘钥为敏感操作时附加验证，请填入最熟悉的数字4~6位；退出请点 /cancel', timer=120,
                            button=close_it_ikb)
     if not msg:
         return

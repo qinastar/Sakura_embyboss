@@ -45,7 +45,7 @@ async def members_info(tg=None, name=None):
         elif data.name is not None and schedall.low_activity and not schedall.check_ex:
             ex = '__若星光连续21天未闪耀，星图契约将暂时沉睡__'
         elif data.name is not None and not schedall.low_activity and not schedall.check_ex:
-            ex = ' __星图契约无需维持活跃度，请尽情探索吧__'
+            ex = ' __契约无需维持活跃度，请尽情探索吧__'
         else:
             ex = data.ex or '无账户信息'
         return name, lv, ex, us, embyid, pwd2

@@ -20,18 +20,18 @@ def judge_start_ikb(is_admin: bool, account: bool) -> InlineKeyboardMarkup:
     if not account:
         d = []
         d.append(['🎟️ 使用星符', 'exchange'])
-        d.append(['👑 签订星图契约', 'create'])
-        d.append(['⭕ 星图契约迁跃', 'changetg'])
-        d.append(['🔍 绑定星图档案', 'bindtg'])
+        d.append(['👑 签订契约', 'create'])
+        d.append(['⭕ 契约迁跃', 'changetg'])
+        d.append(['🔍 绑定已有契约', 'bindtg'])
         # 如果邀请等级为d （未注册用户也能使用），则显示兑换商店
         if _open.invite_lv == 'd':
             d.append(['🏪 星尘兑换中心', 'storeall'])
     else:
         d = [['️👥 冒险者面板', 'members'], ['🌐 星之服务器', 'server']]
         if schedall.check_ex: d.append(['🎟️ 使用续期星符', 'exchange'])
-    if _open.checkin: d.append([f'🎯 星辰签到', 'checkin'])
+    if _open.checkin: d.append([f'🎯 签到', 'checkin'])
     lines = array_chunk(d, 2)
-    if is_admin: lines.append([['👮🏻‍♂️ 星域守护者面板', 'manage']])
+    if is_admin: lines.append([['👮🏻‍♂️ 管理面板', 'manage']])
     keyword = ikb(lines)
     return keyword
 
@@ -39,7 +39,7 @@ def judge_start_ikb(is_admin: bool, account: bool) -> InlineKeyboardMarkup:
 # un_group_answer
 group_f = ikb([[('✨ 与星灵沟通 ✨', f't.me/{bot_name}', 'url')]])
 # un in group
-judge_group_ikb = ikb([[('🌟 星光频道 ', f't.me/{chanel}', 'url'),
+judge_group_ikb = ikb([[('🌟 星の领域 ', f't.me/{chanel}', 'url'),
                         ('💫 冒险者公会', f't.me/{main_group}', 'url')],
                        [('❌ 湮灭此消息', 'closeit')]])
 
@@ -56,7 +56,7 @@ def members_ikb(is_admin: bool = False, account: bool = False) -> InlineKeyboard
                     [('💖 我的收藏', 'my_favorites'),('💠 我的设备', 'my_devices')],
                     ]
         if moviepilot.status:
-            normal.append([['🍿 星域点播站', 'download_center']])
+            normal.append([['🍿 点播站', 'download_center']])
         normal.append([['♻️ 返回星港', 'back_start']])
         return ikb(normal)
     else:
@@ -70,8 +70,8 @@ back_start_ikb = ikb([[('💫 返回星港', 'back_start')]])
 back_members_ikb = ikb([[('💨 返回', 'members')]])
 back_manage_ikb = ikb([[('💨 返回', 'manage')]])
 re_create_ikb = ikb([[('🍥 重新发送星语', 'create'), ('💫 返回星港', 'members')]])
-re_changetg_ikb = ikb([[('✨ 星图契约迁跃', 'changetg'), ('💫 返回星港', 'members')]])
-re_bindtg_ikb = ikb([[('✨ 绑定星图档案', 'bindtg'), ('💫 返回星港', 'members')]])
+re_changetg_ikb = ikb([[('✨ 契约迁跃', 'changetg'), ('💫 返回星港', 'members')]])
+re_bindtg_ikb = ikb([[('✨ 绑定档案', 'bindtg'), ('💫 返回星港', 'members')]])
 re_delme_ikb = ikb([[('♻️ 重新尝试', 'delme')], [('🔙 返回', 'members')]])
 re_reset_ikb = ikb([[('♻️ 重新尝试', 'reset')], [('🔙 返回', 'members')]])
 re_exchange_b_ikb = ikb([[('♻️ 重新尝试', 'exchange'), ('❌ 湮灭', 'closeit')]])
