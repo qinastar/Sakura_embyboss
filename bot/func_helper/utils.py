@@ -1,6 +1,6 @@
 import pytz
 
-from bot import bot, _open, save_config, owner, admins, bot_name, ranks, schedall, group
+from bot import bot, _open, save_config, owner, admins, bot_name, ranks, schedall, group, config
 from bot.sql_helper.sql_code import sql_add_code
 from bot.sql_helper.sql_emby import sql_get_emby
 from cacheout import Cache
@@ -43,7 +43,7 @@ async def members_info(tg=None, name=None):
         if lv == '白名单':
             ex = '+ ∞'
         elif data.name is not None and schedall.low_activity and not schedall.check_ex:
-            ex = '__若星光连续21天未闪耀，星图契约将暂时沉睡__'
+            ex = '__若星光连续{config.activity_check_days}天未闪耀，契约将沉睡__'
         elif data.name is not None and not schedall.low_activity and not schedall.check_ex:
             ex = ' __契约无需维持活跃度，请尽情探索吧__'
         else:

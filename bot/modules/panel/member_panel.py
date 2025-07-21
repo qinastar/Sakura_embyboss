@@ -68,7 +68,7 @@ async def create_user(_, call, us, stats):
             if schedall.check_ex:
                 ex = ex.strftime("%Y-%m-%d %H:%M:%S")
             elif schedall.low_activity:
-                ex = '__若星光连续21天未闪耀，星图契约将暂时沉睡__'
+                ex = '__若星光连续{config.activity_check_days}天未闪耀，星图契约将沉睡__'
             else:
                 ex = '__星图契约无需维持活跃度，请尽情探索吧__'
             await editMessage(send,

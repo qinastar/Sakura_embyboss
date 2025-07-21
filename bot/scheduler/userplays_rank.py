@@ -2,7 +2,7 @@ import math
 import cn2an
 from datetime import datetime, timezone, timedelta
 
-from bot import bot, bot_photo, group, sakura_b, LOGGER, ranks, _open
+from bot import bot, bot_photo, group, sakura_b, LOGGER, ranks, _open 
 from bot.func_helper.emby import emby
 from bot.func_helper.utils import convert_to_beijing_time, convert_s, cache, get_users, tem_deluser
 from bot.sql_helper import Session
@@ -138,14 +138,16 @@ class Uplaysinfo:
             elif e.lv == 'b':
                 try:
                     ac_date = convert_to_beijing_time(user["LastActivityDate"])
+                    from bot import config
+                    activity_check_days = config.activity_check_days
                     # print(e.name, ac_date, now)
-                    if ac_date + timedelta(days=21) < now:
+                    if ac_date + timedelta(days=activity_check_days) < now:
                         if await emby.emby_change_policy(id=user["Id"], method=True):
                             sql_update_emby(Emby.embyid == user["Id"], lv='c')
-                            msg += f"**🔋星光黯淡处理** - 一位沉睡的星际旅者，星光连续21天未闪耀，星图契约将暂时沉睡。**\n\n"
-                            LOGGER.info(f"【活跃检测】- 禁用账户 {user['Name']} #id{e.tg}：21天未活跃")
+                            msg += f"**🔋星光黯淡处理** - 一位沉睡的星际旅者，星光连续{activity_check_days}天未闪耀，星图契约将暂时沉睡。**\n\n"
+                            LOGGER.info(f"【活跃检测】- 禁用账户 {user['Name']} #id{e.tg}：{activity_check_days}天未活跃")
                         else:
-                            msg += f"**🎂星光黯淡处理** - 一位沉睡的星际旅者，星图契约沉睡未能成功，请检查星之服务器连通性。**\n\n"
+                            msg += f"**🎂星光黯淡处理** - 一位沉睡的星际旅者{activity_check_days}天未活跃，星图契约沉睡未能成功，请检查星之服务器连通性。**\n\n"
                             LOGGER.info(f"【活跃检测】- 禁用账户 {user['Name']} #id{e.tg}：禁用失败啦！检查emby连通性")
                 except KeyError:
                     if await emby.emby_change_policy(id=user["Id"], method=True):

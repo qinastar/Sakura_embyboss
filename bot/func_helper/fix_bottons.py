@@ -3,7 +3,7 @@ from pykeyboard import InlineKeyboard, InlineButton
 from pyrogram.types import InlineKeyboardMarkup
 from pyromod.helpers import ikb, array_chunk
 from bot import chanel, main_group, bot_name, extra_emby_libs, tz_id, tz_ad, tz_api, _open, sakura_b, \
-    schedall, auto_update, fuxx_pitao, kk_gift_days, moviepilot, red_envelope
+    schedall, auto_update, fuxx_pitao, moviepilot, red_envelope, config
 from bot.func_helper import nezha_res
 from bot.func_helper.emby import emby
 from bot.func_helper.utils import members_info
@@ -343,12 +343,12 @@ def config_preparation() -> InlineKeyboardMarkup:
     allow_private = '✅' if red_envelope.allow_private else '❎'
     keyboard = ikb(
         [[('📄 导出日志', 'log_out'), ('📌 设置探针', 'set_tz')],
-         [('🎬 媒体库显隐', 'set_block'), (f'{fuxx_pt} 用户过滤', 'set_fuxx_pitao')],
-         [('💠 普通线路设置', 'set_line'),('🌟 白名单线路设置', 'set_whitelist_line')],
-         [(f'{leave_ban} 退群封禁', 'leave_ban'), (f'{uplays} 观影奖励', 'set_uplays')],
-         [(f'{auto_up} 自动更新', 'set_update'), (f'{mp_set} 点播功能', 'set_mp')],
-         [(f'{red_envelope_status} 红包功能', 'set_red_envelope_status'), (f'{allow_private} 专属红包', 'set_red_envelope_allow_private')],
-         [(f'赠送天数设置({kk_gift_days}天)', 'set_kk_gift_days')],
+         [('🎬 显/隐指定库', 'set_block'), (f'{fuxx_pt} 皮套人过滤功能', 'set_fuxx_pitao')],
+         [('💠 普通用户线路', 'set_line'),('🌟 白名单线路', 'set_whitelist_line')],
+         [(f'{leave_ban} 退群封禁', 'leave_ban'), (f'{uplays} 观影奖励结算', 'set_uplays')],
+         [(f'{auto_up} 自动更新bot', 'set_update'), (f'{mp_set} Moviepilot点播', 'set_mp')],
+         [(f'{red_envelope_status} 红包', 'set_red_envelope_status'), (f'{allow_private} 专属红包', 'set_red_envelope_allow_private')],
+         [(f'设置赠送资格天数({config.kk_gift_days}天)', 'set_kk_gift_days'), (f'设置活跃检测天数({config.activity_check_days}天)', 'set_activity_check_days')],
          [('🔙 返回', 'manage')]])
     return keyboard
 

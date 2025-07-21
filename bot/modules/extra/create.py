@@ -4,7 +4,7 @@ from datetime import datetime
 from pyrogram import filters
 from pyrogram.types import CallbackQuery
 
-from bot import bot, prefixes, LOGGER, emby_line, owner, bot_photo, schedall
+from bot import bot, prefixes, LOGGER, emby_line, owner, bot_photo, schedall, config
 from bot.func_helper.emby import emby
 from bot.func_helper.filters import admins_on_filter
 from bot.func_helper.fix_bottons import cv_user_playback_reporting
@@ -112,7 +112,7 @@ async def uun_info(_, msg, name = None):
         a = ''
 
     if e.name and schedall.low_activity and not schedall.check_ex:
-        ex = '__若星光连续21天未闪耀，星图契约将暂时沉睡__'
+        ex = '__若星光连续{config.activity_check_days}天未闪耀，星图契约将暂时沉睡__'
 
     elif e.name and not schedall.low_activity and not schedall.check_ex:
         ex = ' __星图契约无需维持活跃度，请尽情探索吧__'
