@@ -135,9 +135,9 @@ class ForwardLine(BaseModel):
     title: str
 
 class Forward(BaseModel):
-    scheme: str = "https"
-    host: str = "your-emby-server.com"
-    port: int = 443
+    scheme: Optional[str] = "https"
+    host: Optional[str] = "your-emby-server.com"
+    port: Optional[int] = 443
     lines: Optional[List[ForwardLine]] = []
 
 class Config(BaseModel):
